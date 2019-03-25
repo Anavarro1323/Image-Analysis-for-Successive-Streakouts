@@ -1,8 +1,7 @@
 clear
 clc
 
-%pitri dish coordinates%
-Cx = 240222222222222222222222220;
+Cx = 400; 
 Cy = 1600;
 radius = 580;
 sense = 0.83
