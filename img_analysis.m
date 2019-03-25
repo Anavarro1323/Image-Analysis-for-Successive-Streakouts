@@ -1,11 +1,5 @@
 clear
 clc
-myFolder = 'C:\Users\aleja\OneDrive\Documents\MATLAB Real\Unanalyzed Data\Trial 1s\28 Degrees\1[B6]_28\1[B6]P28\Input';
-filePattern = fullfile(myFolder, '*.jpg');
-theFiles = dir(filePattern);
-SE = offsetstrel('ball',100,5);
-
-A = {};
 
 %pitri dish coordinates%
 Cx = 2400;
@@ -13,6 +7,16 @@ Cy = 1600;
 radius = 580;
 sense = 0.83
 range = [2 15]
+myFolder = 'C:\Users\aleja\OneDrive\Documents\MATLAB Real\Unanalyzed Data\Trial 1s\28 Degrees\1[B6]_28\1[B6]P28\Input';
+
+
+filePattern = fullfile(myFolder, '*.jpg');
+theFiles = dir(filePattern);
+SE = offsetstrel('ball',100,5);
+
+A = {};
+
+
 
 
 %Preprocessing
