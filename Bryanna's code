@@ -1,0 +1,18 @@
+SE = offsetstrel('ball',100,5);
+
+myfolder = 'C:\Users\bryan\Desktop\matlab conA'
+filePattern = fullfile(myfolder, '*.jpg');
+theFiles = dir(filePattern);
+
+ for K = [1:length(theFiles)] 
+ OriginalImage = imread(theFiles(K).name);
+ imshow(OriginalImage)
+ [centers, radii, metric] = imfindcircles(OriginalImage, [10,30], 'Method', 'TwoStage', 'Sensitivity', .90);
+ viscircles(centers, radii)
+ M_bw = im2bw(M);
+M_pad = padarray(M_bw,[padlen padlen],0);
+background_mask = ~M_pad_filled(padlen+1:end-padlen,padlen+1:end-padlen);
+I(background_mask) = 0;
+figure,imshow(I)
+ end
+ 
