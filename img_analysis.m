@@ -1,12 +1,12 @@
 clear
 clc
 
-Cx = 400; 
-Cy = 1600;
+Cx = 2319; 
+Cy = 1427;
 radius = 580;
 sense = 0.83
 range = [2 15]
-myFolder = 'C:\Users\aleja\OneDrive\Documents\MATLAB Real\Unanalyzed Data\Trial 1s\28 Degrees\1[B6]_28\1[B6]P28\Input';
+myFolder = 'C:\Users\aleja\OneDrive\Desktop\MATLAB Real\Unanalyzed Data\Trial 1s\28 Degrees\1[B6]_28\1[B6]Y28\Input';
 
 
 filePattern = fullfile(myFolder, '*.jpg');
@@ -20,6 +20,7 @@ A = {};
 
 %Preprocessing
 for K = [1:length(theFiles)]
+    
     OriginalImage = imread(theFiles(K).name);		%Loads image into workspace
     GrayImage = rgb2gray(OriginalImage);	%Converts to black and white
     InvertedGrayImage = 255-GrayImage;       %inverts the colors, white to black
@@ -28,7 +29,6 @@ for K = [1:length(theFiles)]
     [Height, Width] = size(ThresholdedImage);
     fprintf(theFiles(K).name)
 
-hold on 
 imshow(ThresholdedImage) 
 PitriDish = images.roi.Circle(gca,'Center',[Cx Cy],'Radius',radius)
 
