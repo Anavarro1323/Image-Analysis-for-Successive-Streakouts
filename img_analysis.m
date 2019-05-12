@@ -221,34 +221,34 @@ hold on
 % end
 
 
-
-
-
-
-
-
-
-
-% %Creates Boxplot
-% A = padcat (AllQuadrants(:).First, AllQuadrants(:).Second, AllQuadrants(:).Third, AllQuadrants(:).Fourth)
-% 
-% 
-% [F G] = size(A)
-% figure('Color', 'w');
-% c = colormap('Winter');
-% C = [c; ones(1,3); c];  % this is the trick for coloring the boxes
 % 
 % 
 % 
-% g1 = repmat([1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 4 4],F,1);
-% g2 = repmat('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',F,1);
-% zv = A(:);
-% gp1 = g1(:);
-% gp2 = g2(:);
-% boxplot(zv,{gp1,gp2},'factorgap',[50,0],'colors', C, 'plotstyle', 'compact');
-
-
-%Normalized Plot%
+% 
+% 
+% 
+% 
+% 
+% % %Creates Boxplot
+% % A = padcat (AllQuadrants(:).First, AllQuadrants(:).Second, AllQuadrants(:).Third, AllQuadrants(:).Fourth)
+% % 
+% % 
+% % [F G] = size(A)
+% % figure('Color', 'w');
+% % c = colormap('Winter');
+% % C = [c; ones(1,3); c];  % this is the trick for coloring the boxes
+% % 
+% % 
+% % 
+% % g1 = repmat([1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 4 4],F,1);
+% % g2 = repmat('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',F,1);
+% % zv = A(:);
+% % gp1 = g1(:);
+% % gp2 = g2(:);
+% % boxplot(zv,{gp1,gp2},'factorgap',[50,0],'colors', C, 'plotstyle', 'compact');
+% 
+% 
+Normalized Plot%
 A = padcat (AllQuadrants(:).NormFirst, AllQuadrants(:).NormSecond, AllQuadrants(:).NormThird, AllQuadrants(:).NormFourth)
 
 
