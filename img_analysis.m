@@ -1,13 +1,14 @@
 clear
 clc
 
+myFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Input'
+OutputFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Output.'
 Cx = 1646; 
 Cy = 2442;
 radius = 653;
 sense = 0.80;
 range = [2 40]
-myFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Input'
-OutputFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Output.'
+
 
 filePattern = fullfile(myFolder, '*.jpg');
 theFiles = dir(filePattern);
