@@ -1,14 +1,13 @@
 clear
 clc
 
-myFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Input'
-OutputFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Output.'
 Cx = 1646; 
 Cy = 2442;
 radius = 653;
 sense = 0.80;
 range = [2 40]
-
+myFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Input'
+OutputFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Output.'
 
 filePattern = fullfile(myFolder, '*.jpg');
 theFiles = dir(filePattern);
@@ -30,6 +29,22 @@ for K = [1:length(theFiles)]
     [Height, Width] = size(ThresholdedImage);
     fprintf(theFiles(K).name)
 
+imshow(ThresholdedImage)
+hold on 
+PennyRegion = images.roi.Rectangle(gca,'Position',[2240,1200,900,600]);
+PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
+IInew = ThresholdedImage.*PennyRegionMask;
+imshow(IInew)
+
+[Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
+
+figure;imshow(IInew);
+viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
+
+ConvPix2MM = (9.525/Penny1radius)
+    
+    
+    
 imshow(ThresholdedImage) 
 PitriDish = images.roi.Circle(gca,'Center',[Cx Cy],'Radius',radius)
 
@@ -108,10 +123,10 @@ AllImages(K).Fourth = Q4circcrop
 
 
 
-AllQuadrants(K).First = Q1r
-AllQuadrants(K).Second = Q2r
-AllQuadrants(K).Third = Q3r
-AllQuadrants(K).Fourth = Q4r
+AllQuadrants(K).First = times(Q1r,ConvPix2MM)
+AllQuadrants(K).Second = times(Q2r,ConvPix2MM)
+AllQuadrants(K).Third = times(Q3r,ConvPix2MM)
+AllQuadrants(K).Fourth = times(Q4r,ConvPix2MM)
 
 FirstAv = median(AllQuadrants(1).First)
 SecondAv = median(AllQuadrants(1).Second)
@@ -240,6 +255,22 @@ subplot(2,4,7);subimage(AllImages(10).Third);title(count(10).Q3)
 subplot(2,4,8);subimage(AllImages(10).Fourth);title(count(10).Q4)
 
 
+imshow(ThresholdedImage)
+hold on 
+PennyRegion = images.roi.Rectangle(gca,'Position',[2240,1200,900,600]);
+PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
+IInew = ThresholdedImage.*PennyRegionMask;
+imshow(IInew)
+
+[Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
+
+figure;imshow(IInew);
+viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
+
+ConvPix2MM = (Penny1radius/9.525)
+
+
+
 
 
 
@@ -325,6 +356,7 @@ end
 
 
 
+
 %Student's T Test%
 for (n = [1:10])
     [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).First)
@@ -342,3 +374,4 @@ end
 %h=1 means significant
  RejectNullTable = struct2table(RejectNull); 
      disp(RejectNullTable)
+
