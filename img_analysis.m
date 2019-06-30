@@ -1,13 +1,15 @@
 clear
 clc
 
-Cx = 1646; 
-Cy = 2442;
+Cx = 2328; 
+Cy = 1430;
 radius = 653;
 sense = 0.80;
 range = [2 40]
-myFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Input'
-OutputFolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G\Output.'
+myFolder = 'C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\Input'
+OutputFolder = 'C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\Output.'
+
+PennyPos = [2500,200,900,600]
 
 filePattern = fullfile(myFolder, '*.jpg');
 theFiles = dir(filePattern);
@@ -29,23 +31,23 @@ for K = [1:length(theFiles)]
     [Height, Width] = size(ThresholdedImage);
     fprintf(theFiles(K).name)
 
-imshow(ThresholdedImage)
-hold on 
-PennyRegion = images.roi.Rectangle(gca,'Position',[2240,1200,900,600]);
-PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
-IInew = ThresholdedImage.*PennyRegionMask;
-imshow(IInew)
+% imshow(ThresholdedImage)
+% hold on 
+% PennyRegion = images.roi.Rectangle(gca,'Position',PennyPos);
+% PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
+% IInew = ThresholdedImage.*PennyRegionMask;
+% imshow(IInew)
+% 
+% [Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
+% 
+% figure;imshow(IInew);
+% viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
 
-[Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
-
-figure;imshow(IInew);
-viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
-
-ConvPix2MM = (9.525/Penny1radius)
+ConvPix2MM = (9.525/150)
     
     
     
-imshow(ThresholdedImage) 
+
 PitriDish = images.roi.Circle(gca,'Center',[Cx Cy],'Radius',radius)
 
 BW = PitriDish.createMask(ThresholdedImage);
@@ -81,38 +83,38 @@ Q4 = Inew([int16(Cy):Height],[int16(Cx):Width]);
 
 figure;imshow(Q1);
 viscircles(Q1c, Q1r, 'EdgeColor', 'b')
-saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\2[BB]G\Output\Q1_.',theFiles(K).name])
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\Output\Q1_.',theFiles(K).name])
 close all
 
 figure;imshow(Q2);
 viscircles(Q2c, Q2r, 'EdgeColor', 'r');
-saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\2[BB]G\output\Q2_.',theFiles(K).name])
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q2_.',theFiles(K).name])
 close all
 
 figure;imshow(Q3);
 viscircles(Q3c, Q3r, 'EdgeColor', 'g');
-saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\2[BB]G\output\Q3_.',theFiles(K).name])
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q3_.',theFiles(K).name])
 close all
 
 figure;imshow(Q4);
 viscircles(Q4c, Q4r, 'EdgeColor', 'y');
-saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\2[BB]G\output\Q4_.',theFiles(K).name])
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q4_.',theFiles(K).name])
 close all
 
 
-Q1circ = imread(['C:\Users\aleja\OneDrive\Desktop\2[BB]G\output\Q1_.',theFiles(K).name]);
-Q1circcrop = imcrop(Q1circ,[453 884 300 300]);
+Q1circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q1_.',theFiles(K).name]);
+Q1circcrop = imcrop(Q1circ,[671 464 300 300]);
 
 
-Q2circ = imread(['C:\Users\aleja\OneDrive\Desktop\2[BB]G\output\Q2_.',theFiles(K).name]);
+Q2circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q2_.',theFiles(K).name]);
 Q2circcrop = imcrop(Q2circ,[154 464 339 313]);
 imshow(Q2circcrop)
 
-Q3circ = imread(['C:\Users\aleja\OneDrive\Desktop\2[BB]G\output\Q3_.',theFiles(K).name]);
+Q3circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q3_.',theFiles(K).name]);
 Q3circcrop = imcrop(Q3circ,[671 40 250 261]);
 
 
-Q4circ = imread(['C:\Users\aleja\OneDrive\Desktop\2[BB]G\output\Q4_.',theFiles(K).name]);
+Q4circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q4_.',theFiles(K).name]);
 Q4circcrop = imcrop(Q4circ,[117 24 350 248]);
 imshow(Q4circcrop);
 
@@ -255,24 +257,6 @@ subplot(2,4,7);subimage(AllImages(10).Third);title(count(10).Q3)
 subplot(2,4,8);subimage(AllImages(10).Fourth);title(count(10).Q4)
 
 
-imshow(ThresholdedImage)
-hold on 
-PennyRegion = images.roi.Rectangle(gca,'Position',[2240,1200,900,600]);
-PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
-IInew = ThresholdedImage.*PennyRegionMask;
-imshow(IInew)
-
-[Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
-
-figure;imshow(IInew);
-viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
-
-ConvPix2MM = (Penny1radius/9.525)
-
-
-
-
-
 
 %RawPlot:
 A = padcat (AllQuadrants(:).First, AllQuadrants(:).Second, AllQuadrants(:).Third, AllQuadrants(:).Fourth)
@@ -357,21 +341,31 @@ end
 
 
 
-%Student's T Test%
 for (n = [1:10])
     [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).First)
-RejectNull(n).FirstQuadrant = h
+RejectNull(n).FirsttoSecond = h
+PVals(n).FirsttoSecond = p
 
    [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Third)
-RejectNull(n).ThirdQuadrant = h
-
+RejectNull(n).ThirdtoSecond = h
+PVals(n).ThirdtoSecond = p
 
  [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Fourth)
-RejectNull(n).FourthQuadrant = h
+RejectNull(n).FourthtoSecond = h
+PVals(n).FourthtoSecond = p
+
+    [h,p,ci,stats] = ttest2(AllQuadrants(n).Fourth,AllQuadrants(n).Third)
+RejectNull(n).FourthtoThird = h
+PVals(n).FourthtoThird = p
+
+  [h,p,ci,stats] = ttest2(AllQuadrants(n).First,AllQuadrants(n).Third)
+RejectNull(n).FirsttoThird = h
+PVals(n).FirsttoThird = p
 end
 
-%Read-specific T test. Compares every read to wild type of same generation.
-%h=1 means significant
- RejectNullTable = struct2table(RejectNull); 
+
+RejectNullTable = struct2table(RejectNull);
      disp(RejectNullTable)
 
+PValsTab = struct2table(PVals)
+disp(PValsTab)
