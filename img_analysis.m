@@ -322,3 +322,23 @@ end
 for r = [0:9]
 set(handle(210-r),'Color', string(TestColor2(40-(times(4,r)))))
 end
+
+
+
+%Student's T Test%
+for (n = [1:10])
+    [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).First)
+RejectNull(n).FirstQuadrant = h
+
+   [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Third)
+RejectNull(n).ThirdQuadrant = h
+
+
+ [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Fourth)
+RejectNull(n).FourthQuadrant = h
+end
+
+%Read-specific T test. Compares every read to wild type of same generation.
+%h=1 means significant
+ RejectNullTable = struct2table(RejectNull); 
+     disp(RejectNullTable)
