@@ -103,7 +103,7 @@ close all
 
 
 Q1circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q1_.',theFiles(K).name]);
-Q1circcrop = imcrop(Q1circ,[671 464 300 300]);
+Q1circcrop = imcrop(Q1circ,[930 350 400 400]);
 
 
 Q2circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q2_.',theFiles(K).name]);
