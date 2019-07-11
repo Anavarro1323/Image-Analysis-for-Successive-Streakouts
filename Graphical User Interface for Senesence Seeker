@@ -1,0 +1,751 @@
+function varargout = GUISS(varargin)
+% GUISS MATLAB code for GUISS.fig
+%      GUISS, by itself, creates a new GUISS or raises the existing
+%      singleton*.
+%
+%      H = GUISS returns the handle to a new GUISS or the handle to
+%      the existing singleton*.
+%
+%      GUISS('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in GUISS.M with the given input arguments.
+%
+%      GUISS('Property','Value',...) creates a new GUISS or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before GUISS_OpeningFcn gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to GUISS_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
+
+% Edit the above text to modify the response to help GUISS
+
+% Last Modified by GUIDE v2.5 05-Jul-2019 14:46:17
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @GUISS_OpeningFcn, ...
+                   'gui_OutputFcn',  @GUISS_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+% --- Executes just before GUISS is made visible.
+function GUISS_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to GUISS (see VARARGIN)
+
+% Choose default command line output for GUISS
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes GUISS wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = GUISS_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+
+% --- Executes on button press in Text1.
+function radiobutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to Text1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of Text1
+
+
+
+function GUI1_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GUI1 as text
+%        str2double(get(hObject,'String')) returns contents of GUI1 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function GUI1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GUI1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+Cx = str2num(get(handles.GUI1,'String'));
+
+
+
+% --- Executes on button press in radiobutton2.
+function radiobutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton2
+
+
+
+function GUI2_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GUI2 as text
+%        str2double(get(hObject,'String')) returns contents of GUI2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function GUI2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GUI2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+Cy = str2num(get(handles.GUI2,'String'));
+
+
+% --- Executes on button press in radiobutton3.
+function radiobutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton3
+
+
+
+function GUI3_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GUI3 as text
+%        str2double(get(hObject,'String')) returns contents of GUI3 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function GUI3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GUI3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+  radius = str2num(get(handles.GUI3,'String'));
+
+
+% --- Executes on button press in radiobutton4.
+function radiobutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton4
+
+
+
+function GUI4_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GUI4 as text
+%        str2double(get(hObject,'String')) returns contents of GUI4 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function GUI4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GUI4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+sense = str2num(get(handles.GUI4,'String'));
+
+
+
+% --- Executes on button press in radiobutton5.
+function radiobutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton5
+
+
+
+function GUI5A_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI5A (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GUI5A as text
+%        str2double(get(hObject,'String')) returns contents of GUI5A as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function GUI5A_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GUI5A (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+RangeMin = str2num(get(handles.GUI5A,'String'))
+
+
+
+function GUI5B_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI5B (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GUI5B as text
+%        str2double(get(hObject,'String')) returns contents of GUI5B as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function GUI5B_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GUI5B (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+RangeMax = str2num(get(handles.GUI5B,'String'))
+Range = [RangeMin, RangeMax]
+
+% --- Executes on button press in radiobutton6.
+function radiobutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton6
+
+
+
+function GUI6A_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI6A (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GUI6A as text
+%        str2double(get(hObject,'String')) returns contents of GUI6A as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function GUI6A_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GUI6A (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+PennyMin = str2num(get(handles.GUI6A,'String'))
+
+
+
+function GUI6B_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI6B (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of GUI6B as text
+%        str2double(get(hObject,'String')) returns contents of GUI6B as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function GUI6B_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to GUI6B (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+PennyMax = str2num(get(handles.GUI6B,'String'))  
+PennyPos = [PennyMin, PennyMax] 
+
+
+% --- Executes on button press in GUI7.
+function GUI7_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in GUI8.
+function GUI8_Callback(hObject, eventdata, handles)
+% hObject    handle to GUI8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of GUI8
+
+
+% --- Executes on button press in IMGPROCESSLOOPGUI.
+function IMGPROCESSLOOPGUI_Callback(hObject, eventdata, handles)
+% hObject    handle to IMGPROCESSLOOPGUI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+
+for K = [1:length(theFiles)]
+    
+    OriginalImage = imread(theFiles(K).name);		%Loads image into workspace
+    GrayImage = rgb2gray(OriginalImage);	%Converts to black and white
+    InvertedGrayImage = 255-GrayImage;       %inverts the colors, white to black
+    NoBack = imtophat(InvertedGrayImage,SE);	%Subtracts Background
+    ThresholdedImage = NoBack <= 20;        %Thresholds image
+    [Height, Width] = size(ThresholdedImage);
+    fprintf(theFiles(K).name)
+
+% imshow(ThresholdedImage)
+% hold on 
+% PennyRegion = images.roi.Rectangle(gca,'Position',PennyPos);
+% PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
+% IInew = ThresholdedImage.*PennyRegionMask;
+% imshow(IInew)
+% 
+% [Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
+% 
+% figure;imshow(IInew);
+% viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
+
+ConvPix2MM = (9.525/150)
+    
+    
+    
+
+PitriDish = images.roi.Circle(gca,'Center',[Cx Cy],'Radius',radius)
+
+BW = PitriDish.createMask(ThresholdedImage);
+Inew = ThresholdedImage.*BW;
+
+VerticalLine = line([Cx Cx],[0 Height]);
+HorizontalLine = line([0 Width],[Cy Cy]);
+hold off
+
+Q1 = Inew([1:int16(Cy)],[1:int16(Cx)]);
+Q2 = Inew([1:int16(Cy)],[int16(Cx):Width]);
+Q3 = Inew([int16(Cy):Height],[1:int16(Cx)]);
+Q4 = Inew([int16(Cy):Height],[int16(Cx):Width]);
+
+
+[Q1c,Q1r] = imfindcircles(Q1,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q1,trash] = size(Q1c)
+
+[Q2c,Q2r] = imfindcircles(Q2,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q2,trash] = size(Q2c)
+
+[Q3c,Q3r] = imfindcircles(Q3,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q3,trash] = size(Q3c)
+
+[Q4c,Q4r] = imfindcircles(Q4,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q4,trash] = size(Q4c)
+
+
+
+figure;imshow(Q1);
+viscircles(Q1c, Q1r, 'EdgeColor', 'b')
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\Output\Q1_.',theFiles(K).name])
+close all
+
+figure;imshow(Q2);
+viscircles(Q2c, Q2r, 'EdgeColor', 'r');
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q2_.',theFiles(K).name])
+close all
+
+figure;imshow(Q3);
+viscircles(Q3c, Q3r, 'EdgeColor', 'g');
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q3_.',theFiles(K).name])
+close all
+
+figure;imshow(Q4);
+viscircles(Q4c, Q4r, 'EdgeColor', 'y');
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q4_.',theFiles(K).name])
+close all
+
+
+Q1circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q1_.',theFiles(K).name]);
+Q1circcrop = imcrop(Q1circ,[930 350 400 400]);
+
+
+Q2circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q2_.',theFiles(K).name]);
+Q2circcrop = imcrop(Q2circ,[154 464 339 313]);
+imshow(Q2circcrop)
+
+Q3circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q3_.',theFiles(K).name]);
+Q3circcrop = imcrop(Q3circ,[671 40 250 261]);
+
+
+Q4circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q4_.',theFiles(K).name]);
+Q4circcrop = imcrop(Q4circ,[117 24 350 248]);
+imshow(Q4circcrop);
+
+AllImages(K).First = Q1circcrop
+AllImages(K).Second = Q2circcrop
+AllImages(K).Third = Q3circcrop
+AllImages(K).Fourth = Q4circcrop
+
+
+
+AllQuadrants(K).First = times(Q1r,ConvPix2MM)
+AllQuadrants(K).Second = times(Q2r,ConvPix2MM)
+AllQuadrants(K).Third = times(Q3r,ConvPix2MM)
+AllQuadrants(K).Fourth = times(Q4r,ConvPix2MM)
+
+FirstAv = median(AllQuadrants(1).First)
+SecondAv = median(AllQuadrants(1).Second)
+ThirdAv = median(AllQuadrants(1).Third)
+FourthAv = median(AllQuadrants(1).Fourth)
+
+Corrected(K).First = (AllQuadrants(K).First/FirstAv)
+Corrected(K).Second = (AllQuadrants(K).Second/SecondAv)
+Corrected(K).Third = (AllQuadrants(K).Third/ThirdAv)
+Corrected(K).Fourth = (AllQuadrants(K).Fourth/FourthAv)
+
+
+Q2rM = median(Q2r) 
+AllQuadrants(K).NormFirst = (Q1r/Q2rM)
+AllQuadrants(K).NormSecond = (Q2r/Q2rM)
+AllQuadrants(K).NormThird = (Q3r/Q2rM)
+AllQuadrants(K).NormFourth = (Q4r/Q2rM)
+ 
+end
+
+SizeTable = struct2table(count)
+SizeArray = table2array(SizeTable)
+for P = [1:10]
+
+
+%First
+   if(SizeArray(P,1) > 80)
+    MyColor(P).First =  "g"
+   elseif(SizeArray(P,1)>40)
+       MyColor(P).First = "y"
+   else
+       MyColor(P).First = "r"
+   end   
+  %Second
+   if(SizeArray(P,2) > 80)
+    MyColor(P).Second =  "g"
+   elseif(SizeArray(P,1)>40)
+       MyColor(P).Second = "y"
+   else
+       MyColor(P).Second = "r"   
+       
+   end   
+ %Third
+   if(SizeArray(P,2) > 80)
+    MyColor(P).Third =  "g"
+   elseif(SizeArray(P,1)>40)
+       MyColor(P).Third = "y"
+   else
+       MyColor(P).Third = "r"  
+   end    
+  %Fourth
+ if(SizeArray(P,2) > 80)
+    MyColor(P).Fourth =  "g"
+   elseif(SizeArray(P,1)>40)
+       MyColor(P).Fourth = "y"
+   else
+       MyColor(P).Fourth = "r"  
+       
+ end
+end
+TestColor = struct2cell(MyColor)
+
+TestColor2 = reshape(TestColor,[40,1])
+  
+TestColor2 = flip(reshape(TestColor,[40,1]))
+
+
+
+
+% --- Executes on button press in Plot1.
+function Plot1_Callback(hObject, eventdata, handles)
+% hObject    handle to Plot1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+%Images for Generations 1-4
+subplot(4,4,1);subimage(AllImages(1).First);title(count(1).Q1)
+subplot(4,4,2);subimage(AllImages(1).Second);title(count(1).Q2)
+subplot(4,4,3);subimage(AllImages(1).Third);title(count(1).Q3)
+subplot(4,4,4);subimage(AllImages(1).Fourth);title(count(1).Q4)
+
+subplot(4,4,5);subimage(AllImages(2).First);title(count(2).Q1)
+subplot(4,4,6);subimage(AllImages(2).Second);title(count(2).Q2)
+subplot(4,4,7);subimage(AllImages(2).Third);title(count(2).Q3)
+subplot(4,4,8);subimage(AllImages(2).Fourth);title(count(2).Q4)
+
+subplot(4,4,9);subimage(AllImages(3).First);title(count(3).Q1)
+subplot(4,4,10);subimage(AllImages(3).Second); title(count(3).Q2)
+subplot(4,4,11);subimage(AllImages(3).Third);title(count(3).Q3)
+subplot(4,4,12);subimage(AllImages(3).Fourth);title(count(3).Q4)
+
+subplot(4,4,13);subimage(AllImages(4).First);title(count(4).Q1)
+subplot(4,4,14);subimage(AllImages(4).Second);title(count(4).Q2)
+subplot(4,4,15);subimage(AllImages(4).Third);title(count(4).Q3)
+subplot(4,4,16);subimage(AllImages(4).Fourth);title(count(4).Q4)
+
+%Images for Gen 5 -8
+subplot(4,4,1);subimage(AllImages(5).First);title(count(5).Q1)
+subplot(4,4,2);subimage(AllImages(5).Second);title(count(5).Q2)
+subplot(4,4,3);subimage(AllImages(5).Third);title(count(5).Q3)
+subplot(4,4,4);subimage(AllImages(5).Fourth);title(count(5).Q4)
+
+subplot(4,4,5);subimage(AllImages(6).First);title(count(6).Q1)
+subplot(4,4,6);subimage(AllImages(6).Second);title(count(6).Q2)
+subplot(4,4,7);subimage(AllImages(6).Third);title(count(6).Q3)
+subplot(4,4,8);subimage(AllImages(6).Fourth);title(count(6).Q4)
+
+subplot(4,4,9);subimage(AllImages(7).First);title(count(7).Q1)
+subplot(4,4,10);subimage(AllImages(7).Second);title(count(7).Q2)
+subplot(4,4,11);subimage(AllImages(7).Third);title(count(7).Q3)
+subplot(4,4,12);subimage(AllImages(7).Fourth);title(count(7).Q4)
+
+subplot(4,4,13);subimage(AllImages(8).First);title(count(8).Q1)
+subplot(4,4,14);subimage(AllImages(8).Second);title(count(8).Q2)
+subplot(4,4,15);subimage(AllImages(8).Third);title(count(8).Q3)
+subplot(4,4,16);subimage(AllImages(8).Fourth);title(count(8).Q4)
+
+
+
+
+
+
+
+%Images for Gen 9-10
+subplot(2,4,1);subimage(AllImages(9).First);title(count(9).Q1)
+subplot(2,4,2);subimage(AllImages(9).Second);title(count(9).Q2)
+subplot(2,4,3);subimage(AllImages(9).Third);title(count(9).Q3)
+subplot(2,4,4);subimage(AllImages(9).Fourth);title(count(9).Q4)
+
+subplot(2,4,5);subimage(AllImages(10).First);title(count(10).Q1)
+subplot(2,4,6);subimage(AllImages(10).Second);title(count(10).Q2)
+subplot(2,4,7);subimage(AllImages(10).Third);title(count(10).Q3)
+subplot(2,4,8);subimage(AllImages(10).Fourth);title(count(10).Q4)
+
+
+
+
+% --- Executes on button press in PlotC.
+function PlotC_Callback(hObject, eventdata, handles)
+% hObject    handle to PlotC (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+A = padcat (Corrected(:).First, Corrected(:).Second, Corrected(:).Third, Corrected(:).Fourth)
+
+
+[F G] = size(A)
+
+g5 = repmat([1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 4 4 4],F,1);
+g6 = repmat('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_+=',F,1);
+zv3 = A(:);
+gp5 = g5(:);
+gp6 = g6(:);
+boxplot(zv3,{gp5,gp6},'factorgap',[50,0], 'plotstyle', 'compact');
+handle = get(get(gca,'children'),'children');
+for r = [1:10]
+set(handle(241-r),'Color',string(TestColor2(40-(times(4,r)-3))))
+end
+for r = [0:9]
+set(handle(230-r),'Color', string(TestColor2(40-(times(4,r)+2))))
+end
+for r = [0:9]
+set(handle(220-r),'Color', string(TestColor2(40-(times(4,r)+3))))
+end
+for r = [0:9]
+set(handle(210-r),'Color', string(TestColor2(40-(times(4,r)))))
+end
+
+
+
+
+% --- Executes on button press in PlotN.
+function PlotN_Callback(hObject, eventdata, handles)
+% hObject    handle to PlotN (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%Normalized Plot%
+A = padcat (AllQuadrants(:).NormFirst, AllQuadrants(:).NormSecond, AllQuadrants(:).NormThird, AllQuadrants(:).NormFourth) 
+
+[F G] = size(A)
+
+
+g3 = repmat([1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 4 4 4],F,1);
+g4 = repmat('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_+=',F,1);
+zv2 = A(:);
+gp3 = g3(:);
+gp4 = g4(:);
+boxplot(zv2,{gp3,gp4},'factorgap',[50,0],'plotstyle', 'compact');
+handle = get(get(gca,'children'),'children');
+for r = [1:10]
+set(handle(241-r),'Color',string(TestColor2(40-(times(4,r)-3))))
+end
+for r = [0:9]
+set(handle(230-r),'Color', string(TestColor2(40-(times(4,r)+2))))
+end
+for r = [0:9]
+set(handle(220-r),'Color', string(TestColor2(40-(times(4,r)+3))))
+end
+for r = [0:9]
+set(handle(210-r),'Color', string(TestColor2(40-(times(4,r)))))
+end
+
+
+
+
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+for (n = [1:10])
+    [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).First)
+RejectNull(n).FirsttoSecond = h
+PVals(n).FirsttoSecond = p
+
+   [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Third)
+RejectNull(n).ThirdtoSecond = h
+PVals(n).ThirdtoSecond = p
+
+ [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Fourth)
+RejectNull(n).FourthtoSecond = h
+PVals(n).FourthtoSecond = p
+
+    [h,p,ci,stats] = ttest2(AllQuadrants(n).Fourth,AllQuadrants(n).Third)
+RejectNull(n).FourthtoThird = h
+PVals(n).FourthtoThird = p
+
+  [h,p,ci,stats] = ttest2(AllQuadrants(n).First,AllQuadrants(n).Third)
+RejectNull(n).FirsttoThird = h
+PVals(n).FirsttoThird = p
+end
+
+
+RejectNullTable = struct2table(RejectNull);
+     disp(RejectNullTable)
+
+PValsTab = struct2table(PVals)
+disp(PValsTab)
+
+
+
+function edit9_Callback(hObject, eventdata, handles)
+% hObject    handle to edit9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit9 as text
+%        str2double(get(hObject,'String')) returns contents of edit9 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit9_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+myFolder = str2num(get(handles.edit9,'String'));
+
+
+
+function edit10_Callback(hObject, eventdata, handles)
+% hObject    handle to edit10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit10 as text
+%        str2double(get(hObject,'String')) returns contents of edit10 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit10_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+OutputFolder = str2num(get(handles.edit10,'String'));
