@@ -31,17 +31,17 @@ for K = [1:length(theFiles)]
     [Height, Width] = size(ThresholdedImage);
     fprintf(theFiles(K).name)
 
-% imshow(ThresholdedImage)
-% hold on 
-% PennyRegion = images.roi.Rectangle(gca,'Position',PennyPos);
-% PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
-% IInew = ThresholdedImage.*PennyRegionMask;
-% imshow(IInew)
-% 
-% [Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
-% 
-% figure;imshow(IInew);
-% viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
+imshow(ThresholdedImage)
+hold on 
+PennyRegion = images.roi.Rectangle(gca,'Position',PennyPos);
+PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
+IInew = ThresholdedImage.*PennyRegionMask;
+imshow(IInew)
+
+[Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
+
+figure;imshow(IInew);
+viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
 
 ConvPix2MM = (9.525/150)
     
