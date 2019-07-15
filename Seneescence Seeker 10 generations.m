@@ -6,12 +6,14 @@ Cy = 1430;
 radius = 653;
 sense = 0.80;
 range = [2 40]
-myFolder = 'C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\Input'
-OutputFolder = 'C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\Output.'
+
+basefolder = 'C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\'
+InputFolder = strcat(basefolder,'Input\')
+OutputFolder = strcat(basefolder,'Output\')
 
 PennyPos = [2500,200,900,600]
 
-filePattern = fullfile(myFolder, '*.jpg');
+filePattern = fullfile(InputFolder, '*.jpg');
 theFiles = dir(filePattern);
 SE = offsetstrel('ball',100,5);
 
@@ -31,7 +33,7 @@ for K = [1:length(theFiles)]
     [Height, Width] = size(ThresholdedImage);
     fprintf(theFiles(K).name)
 
-imshow(ThresholdedImage)
+%imshow(ThresholdedImage)
 hold on 
 PennyRegion = images.roi.Rectangle(gca,'Position',PennyPos);
 PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
@@ -83,38 +85,38 @@ Q4 = Inew([int16(Cy):Height],[int16(Cx):Width]);
 
 figure;imshow(Q1);
 viscircles(Q1c, Q1r, 'EdgeColor', 'b')
-saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\Output\Q1_.',theFiles(K).name])
+saveas(gcf,[OutputFolder,'Q1_',theFiles(K).name])
 close all
 
 figure;imshow(Q2);
 viscircles(Q2c, Q2r, 'EdgeColor', 'r');
-saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q2_.',theFiles(K).name])
+saveas(gcf,[OutputFolder,'Q2_',theFiles(K).name])
 close all
 
 figure;imshow(Q3);
 viscircles(Q3c, Q3r, 'EdgeColor', 'g');
-saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q3_.',theFiles(K).name])
+saveas(gcf,[OutputFolder,'Q1_',theFiles(K).name])
 close all
 
 figure;imshow(Q4);
 viscircles(Q4c, Q4r, 'EdgeColor', 'y');
-saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q4_.',theFiles(K).name])
+saveas(gcf,[OutputFolder,'Q4_',theFiles(K).name])
 close all
 
 
-Q1circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q1_.',theFiles(K).name]);
-Q1circcrop = imcrop(Q1circ,[930 350 400 400]);
+Q1circ = imread([OutputFolder,'Q1_',theFiles(K).name]);
+Q1circcrop = imcrop(Q1circ,[117 24 350 248]);
 
 
-Q2circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q2_.',theFiles(K).name]);
-Q2circcrop = imcrop(Q2circ,[154 464 339 313]);
+Q2circ = imread([OutputFolder,'Q2_',theFiles(K).name]);
+Q2circcrop = imcrop(Q2circ,[117 24 350 248]);
 imshow(Q2circcrop)
 
-Q3circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q3_.',theFiles(K).name]);
-Q3circcrop = imcrop(Q3circ,[671 40 250 261]);
+Q3circ = imread([OutputFolder,'Q2_',theFiles(K).name]);
+Q3circcrop = imcrop(Q3circ,[117 24 350 248]);
+imshow(Q3circcrop)
 
-
-Q4circ = imread(['C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\output\Q4_.',theFiles(K).name]);
+Q4circ = imread([OutputFolder,'Q1_',theFiles(K).name]);
 Q4circcrop = imcrop(Q4circ,[117 24 350 248]);
 imshow(Q4circcrop);
 
