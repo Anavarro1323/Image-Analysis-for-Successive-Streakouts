@@ -1,0 +1,366 @@
+clear
+clc
+
+Cx = 275; 
+Cy = 275;
+radius = 271;
+sense = 0.69;
+range = [2 10]
+myFolder = 'C:\Users\aleja\OneDrive\Desktop\PaperInput'
+OutputFolder = 'C:\Users\aleja\OneDrive\Desktop\PaperOutput.'
+
+%PennyPos = [2500,200,900,600]
+
+filePattern = fullfile(myFolder, '*.png');
+theFiles = dir(filePattern);
+SE = offsetstrel('ball',100,5);
+
+
+A = {};
+
+
+
+
+%Preprocessing
+for K = [1:length(theFiles)]
+    
+    OriginalImage = imread(theFiles(K).name);		%Loads image into workspace
+    GrayImage = rgb2gray(OriginalImage);	%Converts to black and white
+    ThresholdedImage = 255-GrayImage;       %inverts the colors, white to black
+    %NoBack = imtophat(GrayImage,SE);	%Subtracts Background
+    %ThresholdedImage = NoBack <= 20;        %Thresholds image
+    [Height, Width] = size(ThresholdedImage);
+    fprintf(theFiles(K).name)
+
+imshow(ThresholdedImage)
+hold on 
+%PennyRegion = images.roi.Rectangle(gca,'Position',PennyPos);
+%PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
+%IInew = ThresholdedImage.*PennyRegionMask;
+%imshow(IInew)
+
+%[Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
+
+%figure;imshow(IInew);
+%viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
+
+ConvPix2MM = (9.525/150)
+    
+    
+    
+
+%PitriDish = images.roi.Circle(gca,'Center',[Cx Cy],'Radius',radius)
+
+%BW = PitriDish.createMask(ThresholdedImage);
+%Inew = ThresholdedImage.*BW;
+
+VerticalLine = line([Cx Cx],[0 Height]);
+HorizontalLine = line([0 Width],[Cy Cy]);
+hold off
+
+Q1 = ThresholdedImage([1:int16(Cy)],[1:int16(Cx)]);
+Q2 = ThresholdedImage([1:int16(Cy)],[int16(Cx):Width]);
+Q3 = ThresholdedImage([int16(Cy):Height],[1:int16(Cx)]);
+Q4 = ThresholdedImage([int16(Cy):Height],[int16(Cx):Width]);
+
+
+[Q1c,Q1r] = imfindcircles(Q1,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q1,trash] = size(Q1c)
+
+[Q2c,Q2r] = imfindcircles(Q2,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q2,trash] = size(Q2c)
+
+[Q3c,Q3r] = imfindcircles(Q3,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q3,trash] = size(Q3c)
+
+[Q4c,Q4r] = imfindcircles(Q4,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q4,trash] = size(Q4c)
+
+
+
+figure;imshow(Q1);
+viscircles(Q1c, Q1r, 'EdgeColor', 'b')
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\PaperOutput\Q1_.',theFiles(K).name])
+close all
+
+figure;imshow(Q2);
+viscircles(Q2c, Q2r, 'EdgeColor', 'r');
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\Paperoutput\Q2_.',theFiles(K).name])
+close all
+
+figure;imshow(Q3);
+viscircles(Q3c, Q3r, 'EdgeColor', 'g');
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\Paperoutput\Q3_.',theFiles(K).name])
+close all
+
+figure;imshow(Q4);
+viscircles(Q4c, Q4r, 'EdgeColor', 'y');
+saveas(gcf,['C:\Users\aleja\OneDrive\Desktop\Paperoutput\Q4_.',theFiles(K).name])
+close all
+
+
+Q1circ = imread(['C:\Users\aleja\OneDrive\Desktop\Paperoutput\Q1_.',theFiles(K).name]);
+Q1circcrop = imcrop(Q1circ,[130 15 250 250]);
+
+
+Q2circ = imread(['C:\Users\aleja\OneDrive\Desktop\Paperoutput\Q2_.',theFiles(K).name]);
+Q2circcrop = imcrop(Q2circ,[120 15 250 250]);
+imshow(Q2circcrop)
+
+Q3circ = imread(['C:\Users\aleja\OneDrive\Desktop\Paperoutput\Q3_.',theFiles(K).name]);
+Q3circcrop = imcrop(Q3circ,[130 15 250 250]);
+
+
+Q4circ = imread(['C:\Users\aleja\OneDrive\Desktop\Paperoutput\Q4_.',theFiles(K).name]);
+Q4circcrop = imcrop(Q4circ,[130 15 250 250]);
+imshow(Q4circcrop);
+
+AllImages(K).First = Q1circcrop
+AllImages(K).Second = Q2circcrop
+AllImages(K).Third = Q3circcrop
+AllImages(K).Fourth = Q4circcrop
+
+
+
+AllQuadrants(K).First = times(Q1r,ConvPix2MM)
+AllQuadrants(K).Second = times(Q2r,ConvPix2MM)
+AllQuadrants(K).Third = times(Q3r,ConvPix2MM)
+AllQuadrants(K).Fourth = times(Q4r,ConvPix2MM)
+
+FirstAv = median(AllQuadrants(1).First)
+SecondAv = median(AllQuadrants(1).Second)
+ThirdAv = median(AllQuadrants(1).Third)
+FourthAv = median(AllQuadrants(1).Fourth)
+
+Corrected(K).First = (AllQuadrants(K).First/FirstAv)
+Corrected(K).Second = (AllQuadrants(K).Second/SecondAv)
+Corrected(K).Third = (AllQuadrants(K).Third/ThirdAv)
+Corrected(K).Fourth = (AllQuadrants(K).Fourth/FourthAv)
+
+
+Q2rM = median(Q2r) 
+AllQuadrants(K).NormFirst = (Q1r/Q2rM)
+AllQuadrants(K).NormSecond = (Q2r/Q2rM)
+AllQuadrants(K).NormThird = (Q3r/Q2rM)
+AllQuadrants(K).NormFourth = (Q4r/Q2rM)
+ 
+end
+
+SizeTable = struct2table(count)
+SizeArray = table2array(SizeTable)
+SizeArray2 = reshape(SizeArray,16,1)
+for P = [1:4]
+%First
+   if(SizeArray2(P+8,1) > 50)
+    MyColor(P).First =  "g"
+   elseif(SizeArray2(P+8,1)>20)
+       MyColor(P).First = "y"
+   else
+       MyColor(P).First = "r"
+   end   
+  %Second
+   if(SizeArray2(P+4,1) > 50)
+    MyColor(P).Second =  "g"
+   elseif(SizeArray2(P+4,1)>20)
+       MyColor(P).Second = "y"
+   else
+       MyColor(P).Second = "r"   
+       
+   end   
+ %Third
+   if(SizeArray2(P,1) > 50)
+    MyColor(P).Third =  "g"
+   elseif(SizeArray2(P,1)>20)
+       MyColor(P).Third = "y"
+   else
+       MyColor(P).Third = "r"  
+   end    
+  %Fourth
+ if(SizeArray2(P+12,1) > 50)
+    MyColor(P).Fourth =  "g"
+   elseif(SizeArray2(P+12,1)>20)
+       MyColor(P).Fourth = "y"
+   else
+       MyColor(P).Fourth = "r"  
+       
+ end
+end
+TestColor = struct2cell(MyColor)
+TestColor2 = (reshape(TestColor,[16,1]))
+
+hold on
+%Images for Generations 1-4
+subplot(4,4,1);subimage(AllImages(1).First);title(count(1).Q1)
+subplot(4,4,2);subimage(AllImages(1).Second);title(count(1).Q2)
+subplot(4,4,3);subimage(AllImages(1).Third);title(count(1).Q3)
+subplot(4,4,4);subimage(AllImages(1).Fourth);title(count(1).Q4)
+
+subplot(4,4,5);subimage(AllImages(2).First);title(count(2).Q1)
+subplot(4,4,6);subimage(AllImages(2).Second);title(count(2).Q2)
+subplot(4,4,7);subimage(AllImages(2).Third);title(count(2).Q3)
+subplot(4,4,8);subimage(AllImages(2).Fourth);title(count(2).Q4)
+
+subplot(4,4,9);subimage(AllImages(3).First);title(count(3).Q1)
+subplot(4,4,10);subimage(AllImages(3).Second); title(count(3).Q2)
+subplot(4,4,11);subimage(AllImages(3).Third);title(count(3).Q3)
+subplot(4,4,12);subimage(AllImages(3).Fourth);title(count(3).Q4)
+
+subplot(4,4,13);subimage(AllImages(4).First);title(count(4).Q1)
+subplot(4,4,14);subimage(AllImages(4).Second);title(count(4).Q2)
+subplot(4,4,15);subimage(AllImages(4).Third);title(count(4).Q3)
+subplot(4,4,16);subimage(AllImages(4).Fourth);title(count(4).Q4)
+
+%Images for Gen 5 -8
+% subplot(4,4,1);subimage(AllImages(5).First);title(count(5).Q1)
+% subplot(4,4,2);subimage(AllImages(5).Second);title(count(5).Q2)
+% subplot(4,4,3);subimage(AllImages(5).Third);title(count(5).Q3)
+% subplot(4,4,4);subimage(AllImages(5).Fourth);title(count(5).Q4)
+% 
+% subplot(4,4,5);subimage(AllImages(6).First);title(count(6).Q1)
+% subplot(4,4,6);subimage(AllImages(6).Second);title(count(6).Q2)
+% subplot(4,4,7);subimage(AllImages(6).Third);title(count(6).Q3)
+% subplot(4,4,8);subimage(AllImages(6).Fourth);title(count(6).Q4)
+% 
+% subplot(4,4,9);subimage(AllImages(7).First);title(count(7).Q1)
+% subplot(4,4,10);subimage(AllImages(7).Second);title(count(7).Q2)
+% subplot(4,4,11);subimage(AllImages(7).Third);title(count(7).Q3)
+% subplot(4,4,12);subimage(AllImages(7).Fourth);title(count(7).Q4)
+% 
+% subplot(4,4,13);subimage(AllImages(8).First);title(count(8).Q1)
+% subplot(4,4,14);subimage(AllImages(8).Second);title(count(8).Q2)
+% subplot(4,4,15);subimage(AllImages(8).Third);title(count(8).Q3)
+% subplot(4,4,16);subimage(AllImages(8).Fourth);title(count(8).Q4)
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% %Images for Gen 9-10
+% subplot(2,4,1);subimage(AllImages(9).First);title(count(9).Q1)
+% subplot(2,4,2);subimage(AllImages(9).Second);title(count(9).Q2)
+% subplot(2,4,3);subimage(AllImages(9).Third);title(count(9).Q3)
+% subplot(2,4,4);subimage(AllImages(9).Fourth);title(count(9).Q4)
+% 
+% subplot(2,4,5);subimage(AllImages(10).First);title(count(10).Q1)
+% subplot(2,4,6);subimage(AllImages(10).Second);title(count(10).Q2)
+% subplot(2,4,7);subimage(AllImages(10).Third);title(count(10).Q3)
+% subplot(2,4,8);subimage(AllImages(10).Fourth);title(count(10).Q4)
+
+
+
+%RawPlot:
+A = padcat (AllQuadrants(:).First, AllQuadrants(:).Second, AllQuadrants(:).Third, AllQuadrants(:).Fourth)
+
+[F G] = size(A)
+
+g1 = repmat([1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4],F,1);
+g2 = repmat('ABCDEFGHIJKLMNOP',F,1);
+zv1 = A(:);
+gp1 = g1(:);
+gp2 = g2(:);
+boxplot(zv1,{gp1,gp2},'factorgap',[20,0],'plotstyle', 'compact');
+handle = get(get(gca,'children'),'children');
+for r = [1:4]
+set(handle(97-r),'Color',string(TestColor2(16-(times(4,r)-3))))
+end
+for r = [0:3]
+set(handle(92-r),'Color', string(TestColor2(16-(times(4,r)+2))))
+end
+for r = [0:3]
+set(handle(88-r),'Color', string(TestColor2(16-(times(4,r)+3))))
+end
+for r = [0:3]
+set(handle(84-r),'Color', string(TestColor2(16-(times(4,r)))))
+end
+
+
+%Normalized Plot%
+% A = padcat (AllQuadrants(:).NormFirst, AllQuadrants(:).NormSecond, AllQuadrants(:).NormThird, AllQuadrants(:).NormFourth) 
+% 
+% [F G] = size(A)
+% 
+% g1 = repmat([1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4],F,1);
+% g2 = repmat('ABCDEFGHIJKLMNOP',F,1);
+% zv1 = A(:);
+% gp1 = g1(:);
+% gp2 = g2(:);
+% boxplot(zv1,{gp1,gp2},'factorgap',[20,0],'plotstyle', 'compact');
+% handle = get(get(gca,'children'),'children');
+% for r = [1:4]
+% set(handle(97-r),'Color',string(TestColor2(16-(times(4,r)-3))))
+% end
+% for r = [0:3]
+% set(handle(92-r),'Color', string(TestColor2(16-(times(4,r)+2))))
+% end
+% for r = [0:3]
+% set(handle(88-r),'Color', string(TestColor2(16-(times(4,r)+3))))
+% end
+% for r = [0:3]
+% set(handle(84-r),'Color', string(TestColor2(16-(times(4,r)))))
+% end
+
+
+
+%CorrectedPlot:
+A = padcat (Corrected(:).First, Corrected(:).Second, Corrected(:).Third, Corrected(:).Fourth)
+
+
+[F G] = size(A)
+
+g1 = repmat([1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4],F,1);
+g2 = repmat('ABCDEFGHIJKLMNOP',F,1);
+zv1 = A(:);
+gp1 = g1(:);
+gp2 = g2(:);
+boxplot(zv1,{gp1,gp2},'factorgap',[20,0],'plotstyle', 'compact');
+handle = get(get(gca,'children'),'children');
+for r = [1:4]
+set(handle(97-r),'Color',string(TestColor2(16-(times(4,r)-3))))
+end
+for r = [0:3]
+set(handle(92-r),'Color', string(TestColor2(16-(times(4,r)+2))))
+end
+for r = [0:3]
+set(handle(88-r),'Color', string(TestColor2(16-(times(4,r)+3))))
+end
+for r = [0:3]
+set(handle(84-r),'Color', string(TestColor2(16-(times(4,r)))))
+end
+
+
+% 
+% 
+% for (n = [1:10])
+%     [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).First)
+% RejectNull(n).FirsttoSecond = h
+% PVals(n).FirsttoSecond = p
+% 
+%    [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Third)
+% RejectNull(n).ThirdtoSecond = h
+% PVals(n).ThirdtoSecond = p
+% 
+%  [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Fourth)
+% RejectNull(n).FourthtoSecond = h
+% PVals(n).FourthtoSecond = p
+% 
+%     [h,p,ci,stats] = ttest2(AllQuadrants(n).Fourth,AllQuadrants(n).Third)
+% RejectNull(n).FourthtoThird = h
+% PVals(n).FourthtoThird = p
+% 
+%   [h,p,ci,stats] = ttest2(AllQuadrants(n).First,AllQuadrants(n).Third)
+% RejectNull(n).FirsttoThird = h
+% PVals(n).FirsttoThird = p
+% end
+% 
+% 
+% RejectNullTable = struct2table(RejectNull);
+%      disp(RejectNullTable)
+% 
+% PValsTab = struct2table(PVals)
+% disp(PValsTab)
