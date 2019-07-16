@@ -67,19 +67,19 @@ Q4 = Inew([int16(Cy):Height],[int16(Cx):Width]);
 
 [Q1c,Q1r] = imfindcircles(Q1,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
-[colonyCount(K).Q1,trash] = size(Q1c)
+[colonyCount(K).Q1,~] = size(Q1c)
 
 [Q2c,Q2r] = imfindcircles(Q2,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
-[colonyCount(K).Q2,trash] = size(Q2c)
+[colonyCount(K).Q2,~] = size(Q2c)
 
 [Q3c,Q3r] = imfindcircles(Q3,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
-[colonyCount(K).Q3,trash] = size(Q3c)
+[colonyCount(K).Q3,~] = size(Q3c)
 
 [Q4c,Q4r] = imfindcircles(Q4,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
-[colonyCount(K).Q4,trash] = size(Q4c)
+[colonyCount(K).Q4,~] = size(Q4c)
 
 
 
