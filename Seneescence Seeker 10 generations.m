@@ -67,19 +67,19 @@ Q4 = Inew([int16(Cy):Height],[int16(Cx):Width]);
 
 [Q1c,Q1r] = imfindcircles(Q1,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
-[count(K).Q1,trash] = size(Q1c)
+[colonyCount(K).Q1,~] = size(Q1c)
 
 [Q2c,Q2r] = imfindcircles(Q2,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
-[count(K).Q2,trash] = size(Q2c)
+[colonyCount(K).Q2,~] = size(Q2c)
 
 [Q3c,Q3r] = imfindcircles(Q3,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
-[count(K).Q3,trash] = size(Q3c)
+[colonyCount(K).Q3,~] = size(Q3c)
 
 [Q4c,Q4r] = imfindcircles(Q4,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
-[count(K).Q4,trash] = size(Q4c)
+[colonyCount(K).Q4,~] = size(Q4c)
 
 
 
@@ -151,7 +151,7 @@ AllQuadrants(K).NormFourth = (Q4r/Q2rM)
  
 end
 
-SizeTable = struct2table(count)
+SizeTable = struct2table(colonyCount)
 SizeArray = table2array(SizeTable)
 for P = [1:10]
 
@@ -200,46 +200,46 @@ TestColor2 = flip(reshape(TestColor,[40,1]))
 
 hold on
 %Images for Generations 1-4
-subplot(4,4,1);subimage(AllImages(1).First);title(count(1).Q1)
-subplot(4,4,2);subimage(AllImages(1).Second);title(count(1).Q2)
-subplot(4,4,3);subimage(AllImages(1).Third);title(count(1).Q3)
-subplot(4,4,4);subimage(AllImages(1).Fourth);title(count(1).Q4)
+subplot(4,4,1);subimage(AllImages(1).First);title(colonyCount(1).Q1)
+subplot(4,4,2);subimage(AllImages(1).Second);title(colonyCount(1).Q2)
+subplot(4,4,3);subimage(AllImages(1).Third);title(colonyCount(1).Q3)
+subplot(4,4,4);subimage(AllImages(1).Fourth);title(colonyCount(1).Q4)
 
-subplot(4,4,5);subimage(AllImages(2).First);title(count(2).Q1)
-subplot(4,4,6);subimage(AllImages(2).Second);title(count(2).Q2)
-subplot(4,4,7);subimage(AllImages(2).Third);title(count(2).Q3)
-subplot(4,4,8);subimage(AllImages(2).Fourth);title(count(2).Q4)
+subplot(4,4,5);subimage(AllImages(2).First);title(colonyCount(2).Q1)
+subplot(4,4,6);subimage(AllImages(2).Second);title(colonyCount(2).Q2)
+subplot(4,4,7);subimage(AllImages(2).Third);title(colonyCount(2).Q3)
+subplot(4,4,8);subimage(AllImages(2).Fourth);title(colonyCount(2).Q4)
 
-subplot(4,4,9);subimage(AllImages(3).First);title(count(3).Q1)
-subplot(4,4,10);subimage(AllImages(3).Second); title(count(3).Q2)
-subplot(4,4,11);subimage(AllImages(3).Third);title(count(3).Q3)
-subplot(4,4,12);subimage(AllImages(3).Fourth);title(count(3).Q4)
+subplot(4,4,9);subimage(AllImages(3).First);title(colonyCount(3).Q1)
+subplot(4,4,10);subimage(AllImages(3).Second); title(colonyCount(3).Q2)
+subplot(4,4,11);subimage(AllImages(3).Third);title(colonyCount(3).Q3)
+subplot(4,4,12);subimage(AllImages(3).Fourth);title(colonyCount(3).Q4)
 
-subplot(4,4,13);subimage(AllImages(4).First);title(count(4).Q1)
-subplot(4,4,14);subimage(AllImages(4).Second);title(count(4).Q2)
-subplot(4,4,15);subimage(AllImages(4).Third);title(count(4).Q3)
-subplot(4,4,16);subimage(AllImages(4).Fourth);title(count(4).Q4)
+subplot(4,4,13);subimage(AllImages(4).First);title(colonyCount(4).Q1)
+subplot(4,4,14);subimage(AllImages(4).Second);title(colonyCount(4).Q2)
+subplot(4,4,15);subimage(AllImages(4).Third);title(colonyCount(4).Q3)
+subplot(4,4,16);subimage(AllImages(4).Fourth);title(colonyCount(4).Q4)
 
 %Images for Gen 5 -8
-subplot(4,4,1);subimage(AllImages(5).First);title(count(5).Q1)
-subplot(4,4,2);subimage(AllImages(5).Second);title(count(5).Q2)
-subplot(4,4,3);subimage(AllImages(5).Third);title(count(5).Q3)
-subplot(4,4,4);subimage(AllImages(5).Fourth);title(count(5).Q4)
+subplot(4,4,1);subimage(AllImages(5).First);title(colonyCount(5).Q1)
+subplot(4,4,2);subimage(AllImages(5).Second);title(colonyCount(5).Q2)
+subplot(4,4,3);subimage(AllImages(5).Third);title(colonyCount(5).Q3)
+subplot(4,4,4);subimage(AllImages(5).Fourth);title(colonyCount(5).Q4)
 
-subplot(4,4,5);subimage(AllImages(6).First);title(count(6).Q1)
-subplot(4,4,6);subimage(AllImages(6).Second);title(count(6).Q2)
-subplot(4,4,7);subimage(AllImages(6).Third);title(count(6).Q3)
-subplot(4,4,8);subimage(AllImages(6).Fourth);title(count(6).Q4)
+subplot(4,4,5);subimage(AllImages(6).First);title(colonyCount(6).Q1)
+subplot(4,4,6);subimage(AllImages(6).Second);title(colonyCount(6).Q2)
+subplot(4,4,7);subimage(AllImages(6).Third);title(colonyCount(6).Q3)
+subplot(4,4,8);subimage(AllImages(6).Fourth);title(colonyCount(6).Q4)
 
-subplot(4,4,9);subimage(AllImages(7).First);title(count(7).Q1)
-subplot(4,4,10);subimage(AllImages(7).Second);title(count(7).Q2)
-subplot(4,4,11);subimage(AllImages(7).Third);title(count(7).Q3)
-subplot(4,4,12);subimage(AllImages(7).Fourth);title(count(7).Q4)
+subplot(4,4,9);subimage(AllImages(7).First);title(colonyCount(7).Q1)
+subplot(4,4,10);subimage(AllImages(7).Second);title(colonyCount(7).Q2)
+subplot(4,4,11);subimage(AllImages(7).Third);title(colonyCount(7).Q3)
+subplot(4,4,12);subimage(AllImages(7).Fourth);title(colonyCount(7).Q4)
 
-subplot(4,4,13);subimage(AllImages(8).First);title(count(8).Q1)
-subplot(4,4,14);subimage(AllImages(8).Second);title(count(8).Q2)
-subplot(4,4,15);subimage(AllImages(8).Third);title(count(8).Q3)
-subplot(4,4,16);subimage(AllImages(8).Fourth);title(count(8).Q4)
+subplot(4,4,13);subimage(AllImages(8).First);title(colonyCount(8).Q1)
+subplot(4,4,14);subimage(AllImages(8).Second);title(colonyCount(8).Q2)
+subplot(4,4,15);subimage(AllImages(8).Third);title(colonyCount(8).Q3)
+subplot(4,4,16);subimage(AllImages(8).Fourth);title(colonyCount(8).Q4)
 
 
 
@@ -248,15 +248,15 @@ subplot(4,4,16);subimage(AllImages(8).Fourth);title(count(8).Q4)
 
 
 %Images for Gen 9-10
-subplot(2,4,1);subimage(AllImages(9).First);title(count(9).Q1)
-subplot(2,4,2);subimage(AllImages(9).Second);title(count(9).Q2)
-subplot(2,4,3);subimage(AllImages(9).Third);title(count(9).Q3)
-subplot(2,4,4);subimage(AllImages(9).Fourth);title(count(9).Q4)
+subplot(2,4,1);subimage(AllImages(9).First);title(colonyCount(9).Q1)
+subplot(2,4,2);subimage(AllImages(9).Second);title(colonyCount(9).Q2)
+subplot(2,4,3);subimage(AllImages(9).Third);title(colonyCount(9).Q3)
+subplot(2,4,4);subimage(AllImages(9).Fourth);title(colonyCount(9).Q4)
 
-subplot(2,4,5);subimage(AllImages(10).First);title(count(10).Q1)
-subplot(2,4,6);subimage(AllImages(10).Second);title(count(10).Q2)
-subplot(2,4,7);subimage(AllImages(10).Third);title(count(10).Q3)
-subplot(2,4,8);subimage(AllImages(10).Fourth);title(count(10).Q4)
+subplot(2,4,5);subimage(AllImages(10).First);title(colonyCount(10).Q1)
+subplot(2,4,6);subimage(AllImages(10).Second);title(colonyCount(10).Q2)
+subplot(2,4,7);subimage(AllImages(10).Third);title(colonyCount(10).Q3)
+subplot(2,4,8);subimage(AllImages(10).Fourth);title(colonyCount(10).Q4)
 
 
 
