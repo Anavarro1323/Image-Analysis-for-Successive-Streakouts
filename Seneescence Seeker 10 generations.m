@@ -1,17 +1,17 @@
 clear
 clc
 
-Cx = 2328; 
-Cy = 1430;
-radius = 653;
+Cx = 775; 
+Cy = 1057;
+radius = 326;
 sense = 0.80;
-range = [2 40]
+range = [2 10]
 
-basefolder = 'C:\Users\aleja\OneDrive\Desktop\1[B6]Y28\'
-InputFolder = strcat(basefolder,'Input\')
-OutputFolder = strcat(basefolder,'Output\')
+basefolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G-25\'
+InputFolder = strcat(basefolder,'Input\');
+OutputFolder = strcat(basefolder,'Output\');
 
-PennyPos = [2500,200,900,600]
+PennyPos = [1096,367,250,250];
 
 filePattern = fullfile(InputFolder, '*.jpg');
 theFiles = dir(filePattern);
@@ -23,29 +23,32 @@ A = {};
 
 
 %Preprocessing
-for K = [1:length(theFiles)]
+for K = 9 %[1:length(theFiles)]
     
     OriginalImage = imread(theFiles(K).name);		%Loads image into workspace
     GrayImage = rgb2gray(OriginalImage);	%Converts to black and white
-    InvertedGrayImage = 255-GrayImage;       %inverts the colors, white to black
+    InvertedGrayImage = 265-GrayImage;       %inverts the colors, white to black
     NoBack = imtophat(InvertedGrayImage,SE);	%Subtracts Background
-    ThresholdedImage = NoBack <= 20;        %Thresholds image
+    ThresholdedImage = NoBack <=40 ;        %Thresholds image
     [Height, Width] = size(ThresholdedImage);
     fprintf(theFiles(K).name)
 
 %imshow(ThresholdedImage)
-hold on 
+hold on ;
 PennyRegion = images.roi.Rectangle(gca,'Position',PennyPos);
 PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
 IInew = ThresholdedImage.*PennyRegionMask;
 imshow(IInew)
 
-[Penny1center,Penny1radius] = imfindcircles(IInew,[100,150],'ObjectPolarity','dark','Sensitivity',.99);
+[Penny1center,Penny1radius] = imfindcircles(IInew,[40,60],'ObjectPolarity','dark','Sensitivity',.99);
+radiiStrongest = Penny1radius(1:1)
+centerStrongest = Penny1center(1:2)
 
 figure;imshow(IInew);
-viscircles(Penny1center, Penny1radius, 'EdgeColor', 'b')
+hold on
+viscircles(centerStrongest, radiiStrongest, 'EdgeColor', 'b')
 
-ConvPix2MM = (9.525/150)
+ConvPix2MM = (9.525/Penny1radius)
     
     
     
@@ -82,42 +85,52 @@ Q4 = Inew([int16(Cy):Height],[int16(Cx):Width]);
 [count(K).Q4,trash] = size(Q4c)
 
 
+im = imread(theFiles(K).name);
 
-figure;imshow(Q1);
-viscircles(Q1c, Q1r, 'EdgeColor', 'b')
+ROI1 = imcrop(im,[minus(Cx,radius),minus(Cy,radius),radius,radius]);
+ROI2 = imcrop(im,[Cx,minus(Cy,radius),radius,radius]);
+ROI3 = imcrop(im,[minus(Cx,radius),Cy,radius,radius]);
+ROI4 = imcrop(im,[Cx,Cy,radius,radius]);
+
+
+
+figure;imshow(ROI1);
+hold on
+viscircles(minus(Q1c, Q1r, 'EdgeColor', 'b')
 saveas(gcf,[OutputFolder,'Q1_',theFiles(K).name])
 close all
 
-figure;imshow(Q2);
+figure;imshow(ROI2);
 viscircles(Q2c, Q2r, 'EdgeColor', 'r');
 saveas(gcf,[OutputFolder,'Q2_',theFiles(K).name])
 close all
 
-figure;imshow(Q3);
+figure;imshow(ROI3);
+hold on
 viscircles(Q3c, Q3r, 'EdgeColor', 'g');
-saveas(gcf,[OutputFolder,'Q1_',theFiles(K).name])
+saveas(gcf,[OutputFolder,'Q3_',theFiles(K).name])
 close all
 
-figure;imshow(Q4);
+figure;imshow(ROI4);
 viscircles(Q4c, Q4r, 'EdgeColor', 'y');
 saveas(gcf,[OutputFolder,'Q4_',theFiles(K).name])
 close all
 
 
 Q1circ = imread([OutputFolder,'Q1_',theFiles(K).name]);
-Q1circcrop = imcrop(Q1circ,[117 24 350 248]);
-
+Q1circcrop = imcrop(Q1circ,[418 549 240 240]);
+imshow(Q1circcrop)
 
 Q2circ = imread([OutputFolder,'Q2_',theFiles(K).name]);
-Q2circcrop = imcrop(Q2circ,[117 24 350 248]);
+Q2circcrop = imcrop(Q2circ,[86 530 264 264]);
 imshow(Q2circcrop)
 
-Q3circ = imread([OutputFolder,'Q2_',theFiles(K).name]);
-Q3circcrop = imcrop(Q3circ,[117 24 350 248]);
+Q3circ = imread([OutputFolder,'Q3_',theFiles(K).name]);
+Q3circcrop = imcrop(Q3circ,[425 32 240 240]);
 imshow(Q3circcrop)
 
-Q4circ = imread([OutputFolder,'Q1_',theFiles(K).name]);
-Q4circcrop = imcrop(Q4circ,[117 24 350 248]);
+Q4circ = imread([OutputFolder,'Q4_',theFiles(K).name]);
+Q4circcrop = imcrop(Q4circ,[116 32 240 240]);
 imshow(Q4circcrop);
 
 AllImages(K).First = Q1circcrop
@@ -127,10 +140,10 @@ AllImages(K).Fourth = Q4circcrop
 
 
 
-AllQuadrants(K).First = times(Q1r,ConvPix2MM)
-AllQuadrants(K).Second = times(Q2r,ConvPix2MM)
-AllQuadrants(K).Third = times(Q3r,ConvPix2MM)
-AllQuadrants(K).Fourth = times(Q4r,ConvPix2MM)
+AllQuadrants(K).First = times(Q1r,ConvPix2MM(1))
+AllQuadrants(K).Second = times(Q2r,ConvPix2MM(1))
+AllQuadrants(K).Third = times(Q3r,ConvPix2MM(1))
+AllQuadrants(K).Fourth = times(Q4r,ConvPix2MM(1))
 
 FirstAv = median(AllQuadrants(1).First)
 SecondAv = median(AllQuadrants(1).Second)
@@ -248,10 +261,10 @@ subplot(4,4,16);subimage(AllImages(8).Fourth);title(count(8).Q4)
 
 
 %Images for Gen 9-10
-subplot(2,4,1);subimage(AllImages(9).First);title(count(9).Q1)
-subplot(2,4,2);subimage(AllImages(9).Second);title(count(9).Q2)
-subplot(2,4,3);subimage(AllImages(9).Third);title(count(9).Q3)
-subplot(2,4,4);subimage(AllImages(9).Fourth);title(count(9).Q4)
+subplot(1,4,1);subimage(AllImages(9).First);title(count(9).Q1)
+subplot(1,4,2);subimage(AllImages(9).Second);title(count(9).Q2)
+subplot(1,4,3);subimage(AllImages(9).Third);title(count(9).Q3)
+subplot(1,4,4);subimage(AllImages(9).Fourth);title(count(9).Q4)
 
 subplot(2,4,5);subimage(AllImages(10).First);title(count(10).Q1)
 subplot(2,4,6);subimage(AllImages(10).Second);title(count(10).Q2)
