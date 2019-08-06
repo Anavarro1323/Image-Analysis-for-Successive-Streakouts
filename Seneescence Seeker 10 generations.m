@@ -7,7 +7,7 @@ radius = 326;
 sense = 0.80;
 range = [2 10]
 
-basefolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G-25\'
+basefolder = 'C:\Users\aleja\OneDrive\Desktop\2[BB]G-23\'
 InputFolder = strcat(basefolder,'Input\');
 OutputFolder = strcat(basefolder,'Output\');
 
@@ -23,7 +23,7 @@ A = {};
 
 
 %Preprocessing
-for K = 9 %[1:length(theFiles)]
+for K = [1:length(theFiles)]
     
     OriginalImage = imread(theFiles(K).name);		%Loads image into workspace
     GrayImage = rgb2gray(OriginalImage);	%Converts to black and white
@@ -72,13 +72,26 @@ Q4 = Inew([int16(Cy):Height],[int16(Cx):Width]);
 'Sensitivity',sense,'Method','twostage');
 [count(K).Q1,trash] = size(Q1c)
 
+Q1cx = minus(Q1c(:,1),radius)
+Q1cy = Q1c(:,2)
+Q1center = [Q1cx(:), Q1cy(:)]
+
 [Q2c,Q2r] = imfindcircles(Q2,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
 [count(K).Q2,trash] = size(Q2c)
 
+Q2cx = Q2c(:,1)
+Q2cy = Q2c(:,2)
+Q2center = [Q2cx(:), Q2cy(:)]
+
 [Q3c,Q3r] = imfindcircles(Q3,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
 [count(K).Q3,trash] = size(Q3c)
+
+Q3cx = minus(Q3c(:,1),radius)
+Q3cy = Q3c(:,2)
+Q3center = [Q3cx(:), Q3cy(:)]
+
 
 [Q4c,Q4r] = imfindcircles(Q4,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
@@ -95,19 +108,17 @@ ROI4 = imcrop(im,[Cx,Cy,radius,radius]);
 
 
 figure;imshow(ROI1);
-hold on
-viscircles(minus(Q1c, Q1r, 'EdgeColor', 'b')
+viscircles(Q1center, Q1r, 'EdgeColor', 'b')
 saveas(gcf,[OutputFolder,'Q1_',theFiles(K).name])
 close all
 
 figure;imshow(ROI2);
-viscircles(Q2c, Q2r, 'EdgeColor', 'r');
+viscircles(Q2center, Q2r, 'EdgeColor', 'r');
 saveas(gcf,[OutputFolder,'Q2_',theFiles(K).name])
 close all
 
 figure;imshow(ROI3);
-hold on
-viscircles(Q3c, Q3r, 'EdgeColor', 'g');
+viscircles(Q3center, Q3r, 'EdgeColor', 'g');
 saveas(gcf,[OutputFolder,'Q3_',theFiles(K).name])
 close all
 
@@ -118,19 +129,19 @@ close all
 
 
 Q1circ = imread([OutputFolder,'Q1_',theFiles(K).name]);
-Q1circcrop = imcrop(Q1circ,[418 549 240 240]);
+Q1circcrop = imcrop(Q1circ,[118 34 240 240]);
 imshow(Q1circcrop)
 
 Q2circ = imread([OutputFolder,'Q2_',theFiles(K).name]);
-Q2circcrop = imcrop(Q2circ,[86 530 264 264]);
+Q2circcrop = imcrop(Q2circ,[118 34 264 264]);
 imshow(Q2circcrop)
 
 Q3circ = imread([OutputFolder,'Q3_',theFiles(K).name]);
-Q3circcrop = imcrop(Q3circ,[425 32 240 240]);
+Q3circcrop = imcrop(Q3circ,[118 34 264 264]);
 imshow(Q3circcrop)
 
 Q4circ = imread([OutputFolder,'Q4_',theFiles(K).name]);
-Q4circcrop = imcrop(Q4circ,[116 32 240 240]);
+Q4circcrop = imcrop(Q4circ,[118 34 264 264]);
 imshow(Q4circcrop);
 
 AllImages(K).First = Q1circcrop
@@ -213,10 +224,10 @@ TestColor2 = flip(reshape(TestColor,[40,1]))
 
 hold on
 %Images for Generations 1-4
-subplot(4,4,1);subimage(AllImages(1).First);title(count(1).Q1)
-subplot(4,4,2);subimage(AllImages(1).Second);title(count(1).Q2)
-subplot(4,4,3);subimage(AllImages(1).Third);title(count(1).Q3)
-subplot(4,4,4);subimage(AllImages(1).Fourth);title(count(1).Q4)
+subplot(1,4,1);subimage(AllImages(1).First);title(count(1).Q1)
+subplot(1,4,2);subimage(AllImages(1).Second);title(count(1).Q2)
+subplot(1,4,3);subimage(AllImages(1).Third);title(count(1).Q3)
+subplot(1,4,4);subimage(AllImages(1).Fourth);title(count(1).Q4)
 
 subplot(4,4,5);subimage(AllImages(2).First);title(count(2).Q1)
 subplot(4,4,6);subimage(AllImages(2).Second);title(count(2).Q2)
