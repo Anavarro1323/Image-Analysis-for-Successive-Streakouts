@@ -1,3 +1,4 @@
+
 clear
 clc
 
@@ -20,7 +21,6 @@ SE = offsetstrel('ball',100,5);
 
 
 A = {};
-
 
 
 
@@ -192,6 +192,22 @@ subplot(4,4,14);subimage(AllImages(4).Second);title(count(4).Q2)
 subplot(4,4,15);subimage(AllImages(4).Third);title(count(4).Q3)
 subplot(4,4,16);subimage(AllImages(4).Fourth);title(count(4).Q4)
 
+%Calculus based analysis, Integrates area under trendline%
+%Gives 
+for K = [1:length(theFiles)]
+    Av(K).First = sum(AllQuadrants(K).First)/(length(AllQuadrants(K).First))
+    Av(K).Second = sum(AllQuadrants(K).Second)/(length(AllQuadrants(K).Second))
+    Av(K).Third = sum(AllQuadrants(K).Third)/(length(AllQuadrants(K).Third))
+    Av(K).Fourth = sum(AllQuadrants(K).Fourth)/(length(AllQuadrants(K).Fourth))
+end
+generations = [1:length(theFiles)]
+
+FirstArea = trapz(generations,[Av(:).First])
+SecondArea = trapz(generations,[Av(:).Second])
+ThirdArea = trapz(generations,[Av(:).Third])
+FourthArea = trapz(generations,[Av(:).Fourth])
+
+
 
 %RawPlot:
 A = padcat (AllQuadrants(:).First, AllQuadrants(:).Second, AllQuadrants(:).Third, AllQuadrants(:).Fourth)
@@ -285,3 +301,6 @@ RejectNullTable = struct2table(RejectNull);
 
 PValsTab = struct2table(PVals)
 disp(PValsTab)
+
+
+
