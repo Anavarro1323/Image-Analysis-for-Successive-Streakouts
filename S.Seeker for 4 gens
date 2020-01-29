@@ -1,4 +1,3 @@
-
 clear
 clc
 
@@ -7,6 +6,7 @@ Cy = 275;
 radius = 271;
 sense = 0.69;
 range = [2 10]
+maxpix = 100000
 
 
 basefolder = 'C:\Users\aleja\OneDrive\Desktop\Streakouts paper\'
@@ -29,13 +29,12 @@ for K = [1:length(theFiles)]
     
     OriginalImage = imread(theFiles(K).name);		%Loads image into workspace
     GrayImage = rgb2gray(OriginalImage);	%Converts to black and white
-    ThresholdedImage = 255-GrayImage;       %inverts the colors, white to black
-    %NoBack = imtophat(GrayImage,SE);	%Subtracts Background
-    %ThresholdedImage = NoBack <= 20;        %Thresholds image
-    [Height, Width] = size(ThresholdedImage);
+    ThresholdedImage = 255-GrayImage;
+    BW = imbinarize(ThresholdedImage, 'adaptive', 'Sensitivity', 0.500000, 'ForegroundPolarity', 'dark');
+    [Height, Width] = size(BW);
     fprintf(theFiles(K).name)
 
-imshow(ThresholdedImage)
+imshow(BW)
 hold on 
 %PennyRegion = images.roi.Rectangle(gca,'Position',PennyPos);
 %PennyRegionMask = PennyRegion.createMask(ThresholdedImage);
@@ -61,11 +60,124 @@ VerticalLine = line([Cx Cx],[0 Height]);
 HorizontalLine = line([0 Width],[Cy Cy]);
 hold off
 
-Q1 = ThresholdedImage([1:int16(Cy)],[1:int16(Cx)]);
-Q2 = ThresholdedImage([1:int16(Cy)],[int16(Cx):Width]);
-Q3 = ThresholdedImage([int16(Cy):Height],[1:int16(Cx)]);
-Q4 = ThresholdedImage([int16(Cy):Height],[int16(Cx):Width]);
+Q1 = BW([1:int16(Cy)],[1:int16(Cx)]);
+Q2 = BW([1:int16(Cy)],[int16(Cx):Width]);
+Q3 = BW([int16(Cy):Height],[1:int16(Cx)]);
+Q4 = BW([int16(Cy):Height],[int16(Cx):Width]);
 
+
+%False Positive elimination algorithm
+Q1comp = imcomplement(Q1);
+CC1 = bwconncomp(Q1comp);
+
+
+labeled11 = labelmatrix(CC1);
+labeled12 = label2rgb(labeled11,'jet','w','shuffle');
+edges = unique(labeled11);
+
+array1 = cell(CC1.NumObjects,1);
+
+for x =[1:CC1.NumObjects];
+if length(CC1.PixelIdxList{1,x}) > maxpix;
+array1{x,1} = 1;
+else array1{x,1} = 0;
+end
+end
+
+for x = [1:CC1.NumObjects];
+    if array1{x,1} == 1;
+labeled11(labeled11 == x) = 0;
+    end
+end
+
+Q1 = label2rgb(labeled11,'jet','w','shuffle');
+
+%%%%%
+
+Q2comp = imcomplement(Q2);
+CC2 = bwconncomp(Q2comp);
+
+
+labeled21 = labelmatrix(CC2);
+labeled22 = label2rgb(labeled21,'jet','w','shuffle');
+edges = unique(labeled21);
+
+array2 = cell(CC2.NumObjects,1);
+
+for x =[1:CC2.NumObjects];
+if length(CC2.PixelIdxList{1,x}) > maxpix;
+array2{x,1} = 1;
+else array2{x,1} = 0;
+end
+end
+
+for x = [1:CC2.NumObjects];
+    if array2{x,1} == 1;
+labeled21(labeled21 == x) = 0;
+    end
+end
+
+Q2 = label2rgb(labeled21,'jet','w','shuffle');
+
+%%%%%
+
+Q3comp = imcomplement(Q3);
+CC3 = bwconncomp(Q3comp);
+
+
+labeled31 = labelmatrix(CC3);
+labeled32 = label2rgb(labeled31,'jet','w','shuffle');
+edges = unique(labeled31);
+
+array3 = cell(CC3.NumObjects,1);
+
+for x =[1:CC3.NumObjects];
+if length(CC3.PixelIdxList{1,x}) > maxpix;
+array3{x,1} = 1;
+else array3{x,1} = 0;
+end
+end
+
+for x = [1:CC3.NumObjects];
+    if array3{x,1} == 1;
+labeled31(labeled31 == x) = 0;
+    end
+end
+
+Q3 = label2rgb(labeled31,'jet','w','shuffle');
+
+
+%%%%
+
+Q4comp = imcomplement(Q4);
+CC4 = bwconncomp(Q4comp);
+
+
+labeled41 = labelmatrix(CC4);
+labeled42 = label2rgb(labeled41,'jet','w','shuffle');
+edges4 = unique(labeled41);
+
+array4 = cell(CC4.NumObjects,1);
+
+for x =[1:CC4.NumObjects];
+if length(CC4.PixelIdxList{1,x}) > maxpix;
+array4{x,1} = 1;
+else array4{x,1} = 0;
+end
+end
+
+for x = [1:CC4.NumObjects];
+    if array4{x,1} == 1;
+labeled41(labeled41 == x) = 0;
+    end
+end
+
+Q4 = label2rgb(labeled41,'jet','w','shuffle');
+
+Q1orig = OriginalImage([1:int16(Cy)],[1:int16(Cx)]);
+Q2orig = OriginalImage([1:int16(Cy)],[int16(Cx):Width]);
+Q3orig = OriginalImage([int16(Cy):Height],[1:int16(Cx)]);
+Q4orig = OriginalImage([int16(Cy):Height],[int16(Cx):Width]);
 
 [Q1c,Q1r] = imfindcircles(Q1,range,'ObjectPolarity','dark', ...
 'Sensitivity',sense,'Method','twostage');
@@ -84,22 +196,22 @@ Q4 = ThresholdedImage([int16(Cy):Height],[int16(Cx):Width]);
 [count(K).Q4,trash] = size(Q4c)
 
 
-figure;imshow(Q1);
+figure;imshow(Q1orig);
 viscircles(Q1c, Q1r, 'EdgeColor', 'b')
 saveas(gcf,[OutputFolder,'Q1_',theFiles(K).name])
 close all
 
-figure;imshow(Q2);
+figure;imshow(Q2orig);
 viscircles(Q2c, Q2r, 'EdgeColor', 'r');
 saveas(gcf,[OutputFolder,'Q2_',theFiles(K).name])
 close all
 
-figure;imshow(Q3);
+figure;imshow(Q3orig);
 viscircles(Q3c, Q3r, 'EdgeColor', 'g');
-saveas(gcf,[OutputFolder,'Q1_',theFiles(K).name])
+saveas(gcf,[OutputFolder,'Q3_',theFiles(K).name])
 close all
 
-figure;imshow(Q4);
+figure;imshow(Q4orig);
 viscircles(Q4c, Q4r, 'EdgeColor', 'y');
 saveas(gcf,[OutputFolder,'Q4_',theFiles(K).name])
 close all
@@ -113,11 +225,11 @@ Q2circ = imread([OutputFolder,'Q2_',theFiles(K).name]);
 Q2circcrop = imcrop(Q2circ,[117 24 350 248]);
 imshow(Q2circcrop)
 
-Q3circ = imread([OutputFolder,'Q2_',theFiles(K).name]);
+Q3circ = imread([OutputFolder,'Q3_',theFiles(K).name]);
 Q3circcrop = imcrop(Q3circ,[117 24 350 248]);
 imshow(Q3circcrop)
 
-Q4circ = imread([OutputFolder,'Q1_',theFiles(K).name]);
+Q4circ = imread([OutputFolder,'Q4_',theFiles(K).name]);
 Q4circcrop = imcrop(Q4circ,[117 24 350 248]);
 imshow(Q4circcrop);
 
@@ -144,11 +256,14 @@ Corrected(K).Third = (AllQuadrants(K).Third/ThirdAv)
 Corrected(K).Fourth = (AllQuadrants(K).Fourth/FourthAv)
 
 
-Q2rM = median(Q2r) 
-AllQuadrants(K).NormFirst = (Q1r/Q2rM)
-AllQuadrants(K).NormSecond = (Q2r/Q2rM)
-AllQuadrants(K).NormThird = (Q3r/Q2rM)
-AllQuadrants(K).NormFourth = (Q4r/Q2rM)
+
+%%Norm means compare to the wild type, generation by generation. We need to
+%%change WTrm depending on which is the wild type quadrant
+WTrM = median(Q3r) 
+AllQuadrants(K).NormFirst = (Q1r/WTrM)
+AllQuadrants(K).NormSecond = (Q2r/WTrM)
+AllQuadrants(K).NormThird = (Q3r/WTrM)
+AllQuadrants(K).NormFourth = (Q4r/WTrM)
  
 end
 
@@ -193,7 +308,9 @@ subplot(4,4,15);subimage(AllImages(4).Third);title(count(4).Q3)
 subplot(4,4,16);subimage(AllImages(4).Fourth);title(count(4).Q4)
 
 %Calculus based analysis, Integrates area under trendline%
-%Gives 
+%Gives a single number to represent each strain. The integral of test
+%functions needs to be relatively close to wild type. A difference of more
+%than 5 percent is probably a significant difference?
 for K = [1:length(theFiles)]
     Av(K).First = sum(AllQuadrants(K).First)/(length(AllQuadrants(K).First))
     Av(K).Second = sum(AllQuadrants(K).Second)/(length(AllQuadrants(K).Second))
@@ -226,30 +343,30 @@ set(handle(97-r),'Color',string(TestColor2(r)))
 end
 
 
-%Normalized Plot%
-% A = padcat (AllQuadrants(:).NormFirst, AllQuadrants(:).NormSecond, AllQuadrants(:).NormThird, AllQuadrants(:).NormFourth) 
-% 
-% [F G] = size(A)
-% 
-% g1 = repmat([1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4],F,1);
-% g2 = repmat('ABCDEFGHIJKLMNOP',F,1);
-% zv1 = A(:);
-% gp1 = g1(:);
-% gp2 = g2(:);
-% boxplot(zv1,{gp1,gp2},'factorgap',[20,0],'plotstyle', 'compact');
-% handle = get(get(gca,'children'),'children');
-% for r = [1:4]
-% set(handle(97-r),'Color',string(TestColor2(16-(times(4,r)-3))))
-% end
-% for r = [0:3]
-% set(handle(92-r),'Color', string(TestColor2(16-(times(4,r)+2))))
-% end
-% for r = [0:3]
-% set(handle(88-r),'Color', string(TestColor2(16-(times(4,r)+3))))
-% end
-% for r = [0:3]
-% set(handle(84-r),'Color', string(TestColor2(16-(times(4,r)))))
-% end
+%Compare2First Plot%
+A = padcat (AllQuadrants(:).NormFirst, AllQuadrants(:).NormSecond, AllQuadrants(:).NormThird, AllQuadrants(:).NormFourth) 
+
+[F G] = size(A)
+
+g1 = repmat([1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4],F,1);
+g2 = repmat('ABCDEFGHIJKLMNOP',F,1);
+zv1 = A(:);
+gp1 = g1(:);
+gp2 = g2(:);
+boxplot(zv1,{gp1,gp2},'factorgap',[20,0],'plotstyle', 'compact');
+handle = get(get(gca,'children'),'children');
+for r = [1:4]
+set(handle(97-r),'Color',string(TestColor2(16-(times(4,r)-3))))
+end
+for r = [0:3]
+set(handle(92-r),'Color', string(TestColor2(16-(times(4,r)+2))))
+end
+for r = [0:3]
+set(handle(88-r),'Color', string(TestColor2(16-(times(4,r)+3))))
+end
+for r = [0:3]
+set(handle(84-r),'Color', string(TestColor2(16-(times(4,r)))))
+end
 
 
 
@@ -274,33 +391,33 @@ end
 
 
 for (n = [1:4])
-    [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).First)
-RejectNull(n).FirsttoSecond = h
-PVals(n).FirsttoSecond = p
-
-   [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Third)
-RejectNull(n).ThirdtoSecond = h
-PVals(n).ThirdtoSecond = p
-
- [h,p,ci,stats] = ttest2(AllQuadrants(n).Second,AllQuadrants(n).Fourth)
-RejectNull(n).FourthtoSecond = h
-PVals(n).FourthtoSecond = p
-
-    [h,p,ci,stats] = ttest2(AllQuadrants(n).Fourth,AllQuadrants(n).Third)
-RejectNull(n).FourthtoThird = h
-PVals(n).FourthtoThird = p
-
-  [h,p,ci,stats] = ttest2(AllQuadrants(n).First,AllQuadrants(n).Third)
+    [h,p,ci,stats] = ttest2(AllQuadrants(n).Third,AllQuadrants(n).First)
 RejectNull(n).FirsttoThird = h
 PVals(n).FirsttoThird = p
+
+   [h,p,ci,stats] = ttest2(AllQuadrants(n).Third,AllQuadrants(n).Second)
+RejectNull(n).SecondtoThird = h
+PVals(n).SecondtoThird = p
+
+ [h,p,ci,stats] = ttest2(AllQuadrants(n).Third,AllQuadrants(n).Fourth)
+RejectNull(n).FourthtoThird = h
+PVals(n).FourthtoThird = p
 end
+
+%     [h,p,ci,stats] = ttest2(AllQuadrants(n).Fourth,AllQuadrants(n).Third)
+% RejectNull(n).FourthtoThird = h
+% PVals(n).FourthtoThird = p
+% 
+%   [h,p,ci,stats] = ttest2(AllQuadrants(n).First,AllQuadrants(n).Third)
+% RejectNull(n).FirsttoThird = h
+% PVals(n).FirsttoThird = p
+% end
 
 
 RejectNullTable = struct2table(RejectNull);
      disp(RejectNullTable)
 
-PValsTab = struct2table(PVals)
+PValsTab = struct2table(PVals);
 disp(PValsTab)
-
 
 
