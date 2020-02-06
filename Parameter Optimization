@@ -1,0 +1,70 @@
+
+Cx = 275; 
+Cy = 275;
+radius = 271;
+
+sense = 0.69; %sensitivity at first was .69
+range = [1 10] %range at first was [1 10]
+
+Target = table2array(Targets)
+
+%Preprocessing
+ OriginalImage = InputRep	%Loads image into workspace
+ ThresholdedImage = 340-OriginalImage;
+ BW = imbinarize(ThresholdedImage, 'adaptive', 'Sensitivity', 0.500000, 'ForegroundPolarity', 'dark');
+
+
+for pixvar = [1:5:200] 
+maxpix = pixvar %maxpix at first was 125
+    
+    
+
+
+
+%False Positive elimination algorithm
+Q1comp = imcomplement(BW);
+CC1 = bwconncomp(Q1comp);
+
+
+
+labeled11 = labelmatrix(CC1);
+labeled12 = label2rgb(labeled11,'jet','w','shuffle');
+edges = unique(labeled11);
+
+array1 = cell(CC1.NumObjects,1);
+
+for x =[1:CC1.NumObjects];
+if length(CC1.PixelIdxList{1,x}) > maxpix;
+array1{x,1} = 1;
+else array1{x,1} = 0;
+end
+end
+
+for x = [1:CC1.NumObjects];
+    if array1{x,1} == 1;
+labeled11(labeled11 == x) = 0;
+    end
+end
+Q1 = label2rgb(labeled11,'jet','w','shuffle');
+
+
+
+
+
+
+%Circle Finding Algorithm
+[Q1c,Q1r] = imfindcircles(Q1,range,'ObjectPolarity','dark', ...
+'Sensitivity',sense,'Method','twostage');
+[count(K).Q1,trash] = size(Q1c)
+
+
+
+
+Q1A = times(pi,power(Q1r,2))
+
+xcorr(Q1A,Target)
+
+end
+
+
+
