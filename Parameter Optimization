@@ -1,23 +1,23 @@
-
-Cx = 275; 
-Cy = 275;
-radius = 271;
-
-sense = 0.69; %sensitivity at first was .69
-range = [1 10] %range at first was [1 10]
-
-Target = table2array(Targets)
-
 %Preprocessing
+
+Target = table2array(Targets) 
  OriginalImage = InputRep	%Loads image into workspace
  ThresholdedImage = 340-OriginalImage;
  BW = imbinarize(ThresholdedImage, 'adaptive', 'Sensitivity', 0.500000, 'ForegroundPolarity', 'dark');
 
+ parr =NaN([6 8 10 40]);
+for rangemin = [1 6];
+    
+for rangemax = [7 15];
+  range = [rangemin rangemax];
+  
+ for Sensitivityloop = [0.1:0.1:1];
+sense = Sensitivityloop;
+     
+for maxpixloop = [5:5:205] 
+maxpix = maxpixloop; %maxpix at first was 125
 
-for pixvar = [1:5:200] 
-maxpix = pixvar %maxpix at first was 125
-    
-    
+
 
 
 
@@ -53,18 +53,44 @@ Q1 = label2rgb(labeled11,'jet','w','shuffle');
 
 
 %Circle Finding Algorithm
-[Q1c,Q1r] = imfindcircles(Q1,range,'ObjectPolarity','dark', ...
+[Q1c,Q1r] = imfindcircles(BW,range,'ObjectPolarity','dark', ...;
 'Sensitivity',sense,'Method','twostage');
-[count(K).Q1,trash] = size(Q1c)
+
+% figure;imshow(InputRep)
+% viscircles(Q1c, Q1r, 'EdgeColor', 'b')
 
 
+Q1A = times(pi,power(Q1r,2));
 
 
-Q1A = times(pi,power(Q1r,2))
+A = padcat(Q1A,Target);
+[h,pvalue] = ttest2(A(:,1),A(:,2));
+%We want to maximize p value 
 
-xcorr(Q1A,Target)
 
+parr(rangemin,rangemax,fix(times(maxpixloop,0.2)),fix(times(sense,10))) = pvalue;
 end
 
 
+ end
+end
+end
+
+[C,I] = max(parr(:));
+C
+
+[I1,I2,I3,I4] = ind2sub(size(parr),I);
+parr(I1,I2,I3,I4)
+
+clc
+
+%Declaration of Ideal Parameters
+fprintf('ideal max Range Minimum is')
+I1
+fprintf('ideal max Range Maximum is')
+I2
+fprintf('ideal max pixel value is')
+times(I3,5)
+fprintf('ideal max sensitivity is')
+times(sense,0.1)
 
