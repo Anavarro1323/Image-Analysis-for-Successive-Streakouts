@@ -1,14 +1,26 @@
-%Preprocessing
+tic
 
-Target = table2array(Targets) 
- OriginalImage = InputRep	%Loads image into workspace
+%Image Loading and Preprocessing
+ Target = table2array(Targets) ; 
+ OriginalImage = InputRep;	%Loads image into workspace
  ThresholdedImage = 340-OriginalImage;
  BW = imbinarize(ThresholdedImage, 'adaptive', 'Sensitivity', 0.500000, 'ForegroundPolarity', 'dark');
+ BWcomp = imcomplement(BW);
+ parr =NaN([6 3 10 40]);
 
- parr =NaN([6 8 10 40]);
+%False Positive Elimination Set up 
+CC1 = bwconncomp(BWcomp); %makes a struct array of object information, saved as CC1
+InLabMat = labelmatrix(CC1); %turns the CC1 structural array into a label matrix, different objects are identified in sequential numbers
+RGBLabMat = label2rgb(InLabMat,'jet','w','shuffle'); %turns the sequential numbering into different colors, for visualization
+array1 = cell(CC1.NumObjects,1); %creates a list of spaces that will be populated by either 0 or 1, based on maxpix size
+
+
+
+
+
 for rangemin = [1 6];
     
-for rangemax = [7 15];
+for rangemax = [7 10];
   range = [rangemin rangemax];
   
  for Sensitivityloop = [0.1:0.1:1];
@@ -17,35 +29,21 @@ sense = Sensitivityloop;
 for maxpixloop = [5:5:205] 
 maxpix = maxpixloop; %maxpix at first was 125
 
-
-
-
-
 %False Positive elimination algorithm
-Q1comp = imcomplement(BW);
-CC1 = bwconncomp(Q1comp);
 
-
-
-labeled11 = labelmatrix(CC1);
-labeled12 = label2rgb(labeled11,'jet','w','shuffle');
-edges = unique(labeled11);
-
-array1 = cell(CC1.NumObjects,1);
-
-for x =[1:CC1.NumObjects];
+for x =[1:CC1.NumObjects];                           %fills in array1 with 1 or 0, depending on whether a detected object is larger than the maxpix threshold limit. 
 if length(CC1.PixelIdxList{1,x}) > maxpix;
 array1{x,1} = 1;
 else array1{x,1} = 0;
 end
 end
 
-for x = [1:CC1.NumObjects];
+for x = [1:CC1.NumObjects];                           %If array1 is 1, delete the object, otherwise leave the object
     if array1{x,1} == 1;
-labeled11(labeled11 == x) = 0;
+InLabMat(InLabMat == x) = 0;
     end
 end
-Q1 = label2rgb(labeled11,'jet','w','shuffle');
+FPEresult = label2rgb(InLabMat,'jet','w','shuffle');  
 
 
 
@@ -53,22 +51,32 @@ Q1 = label2rgb(labeled11,'jet','w','shuffle');
 
 
 %Circle Finding Algorithm
-[Q1c,Q1r] = imfindcircles(BW,range,'ObjectPolarity','dark', ...;
+[SampleC,SampleR] = imfindcircles(FPEresult,range,'ObjectPolarity','dark', ...;
 'Sensitivity',sense,'Method','twostage');
 
 % figure;imshow(InputRep)
-% viscircles(Q1c, Q1r, 'EdgeColor', 'b')
+% viscircles(SampleC, SampleR, 'EdgeColor', 'b')
 
 
-Q1A = times(pi,power(Q1r,2));
+InLabMat = labelmatrix(CC1);
 
 
+%Comparing result to the ideal in this loop, Aim to maximize p value 
+
+Q1A = times(pi,power(SampleR,2));
 A = padcat(Q1A,Target);
 [h,pvalue] = ttest2(A(:,1),A(:,2));
-%We want to maximize p value 
+
+LengthEffect = 1/minus(length(Target),length(SampleR));
+pres = times(LengthEffect,pvalue);  %pres gives a "P value" that depends on BOTH the number of colonies detected AND the closeness of the distribution to the ideal
+%Or, at least, it's supposed to. I need a statistical test that can account
+%for both, because the highest pres value in the 20k calculations does not
+%result in a good parameter recomendation. 
 
 
-parr(rangemin,rangemax,fix(times(maxpixloop,0.2)),fix(times(sense,10))) = pvalue;
+%adds resulting p value into the P value array (parr), put into the cell,
+%cell P value is put in the parr array depends on the parameters
+parr(rangemin,rangemax,fix(times(maxpixloop,0.2)),fix(times(sense,10))) = pres;
 end
 
 
@@ -76,21 +84,54 @@ end
 end
 end
 
-[C,I] = max(parr(:));
-C
+[Trash,Ideal] = max(parr(:));
 
-[I1,I2,I3,I4] = ind2sub(size(parr),I);
-parr(I1,I2,I3,I4)
+[IRmin,IRmax,I3,I4] = ind2sub(size(parr),Ideal); %Ideal Parameters are saved to a variable
+Imaxpix = times(I3,5)
+Irange = [IRmin IRmax]
+Isense = times(I4,0.1)
 
-clc
 
+%FPE with ideal
+
+for x =[1:CC1.NumObjects];
+if length(CC1.PixelIdxList{1,x}) > I3;
+array1{x,1} = 1;
+else array1{x,1} = 0;
+end
+end
+
+for x = [1:CC1.NumObjects];
+    if array1{x,1} == 1;
+InLabMat(InLabMat == x) = 0;
+    end
+end
+FPEresultIdeal = label2rgb(InLabMat,'jet','w','shuffle');
+
+
+%Circle Finding Algorithm with Ideal
+[IdealC,IdealR] = imfindcircles(FPEresult,Irange,'ObjectPolarity','dark', ...;
+'Sensitivity',Isense,'Method','twostage');
+
+
+
+figure;imshow(FPEresultIdeal)
+viscircles(IdealC, IdealR, 'EdgeColor', 'b')
+
+figure;imshow(InputRep)
+viscircles(IdealC, IdealR, 'EdgeColor', 'b')
+
+clc 
 %Declaration of Ideal Parameters
-fprintf('ideal max Range Minimum is')
-I1
-fprintf('ideal max Range Maximum is')
-I2
+fprintf('ideal Range Minimum is')
+IRmin
+fprintf('ideal Range Maximum is')
+IRmax
 fprintf('ideal max pixel value is')
-times(I3,5)
+Imaxpix
 fprintf('ideal max sensitivity is')
-times(sense,0.1)
+Isense
+
+toc
+
 
