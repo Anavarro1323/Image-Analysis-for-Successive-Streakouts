@@ -1,9 +1,13 @@
 tic
 
+
+warning('off','all')
 %Image Loading and Preprocessing
  Target = table2array(Targets) ; 
  OriginalImage = InputRep;	%Loads image into workspace
- ThresholdedImage = 340-OriginalImage;
+ for thresh = [200:20:400]
+     
+ ThresholdedImage = thresh-OriginalImage;
  BW = imbinarize(ThresholdedImage, 'adaptive', 'Sensitivity', 0.500000, 'ForegroundPolarity', 'dark');
  BWcomp = imcomplement(BW);
  parr =NaN([6 3 10 40]);
@@ -76,20 +80,23 @@ pres = times(LengthEffect,pvalue);  %pres gives a "P value" that depends on BOTH
 
 %adds resulting p value into the P value array (parr), put into the cell,
 %cell P value is put in the parr array depends on the parameters
-parr(rangemin,rangemax,fix(times(maxpixloop,0.2)),fix(times(sense,10))) = pres;
+parr(rangemin,rangemax,fix(times(maxpixloop,0.2)),fix(times(sense,10)),thresh) = pres;
 end
 
 
  end
 end
 end
+ end
+ 
 
 [Trash,Ideal] = max(parr(:));
 
-[IRmin,IRmax,I3,I4] = ind2sub(size(parr),Ideal); %Ideal Parameters are saved to a variable
+[IRmin,IRmax,I3,I4,I5] = ind2sub(size(parr),Ideal); %Ideal Parameters are saved to a variable
 Imaxpix = times(I3,5)
 Irange = [IRmin IRmax]
 Isense = times(I4,0.1)
+
 
 
 %FPE with ideal
@@ -131,7 +138,8 @@ fprintf('ideal max pixel value is')
 Imaxpix
 fprintf('ideal max sensitivity is')
 Isense
+fprintf('ideal threshold value is')
+I5 
 
 toc
-
 
