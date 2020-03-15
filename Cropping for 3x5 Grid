@@ -1,0 +1,49 @@
+
+large = imread('large.jpg');
+
+A = 1
+B = 215
+C = 440
+D = 655
+E = 207
+F = 444
+G = 659
+H = 880
+I = 1098
+
+WT1 = large(A:B, A:E);
+imwrite(WT1,'../SS/Input/WT1.png')
+WT2 = large(B:C, A:E);
+imwrite(WT2,'../SS/Input/WT2.png')
+WT3 = large(C:D, A:E); 
+imwrite(WT3,'../SS/Input/WT3.png')
+
+SIR1G1 = large(A:B, E:F);
+imwrite(SIR1G1,'../SS/Input/SIR1G1.png')
+SIR1G2 = large(B:C, E:F);
+imwrite(SIR1G2,'../SS/Input/SIR1G2.png')
+SIR1G3 = large(C:D, E:F);
+imwrite(SIR1G3,'../SS/Input/SIR1G3.png')
+
+SIR2G1 = large(A:B, F:G);
+imwrite(SIR2G1,'../SS/Input/SIR2G1.png')
+SIR2G2 = large(A:B, F:G);
+imwrite(SIR2G2,'../SS/Input/SIR2G2.png')
+SIR2G3 = large(A:B, F:G);
+imwrite(SIR2G3,'../SS/Input/SIR2G3.png')
+
+SIR3G1 = large(A:B, G:H);
+imwrite(SIR3G1,'../SS/Input/SIR1G1.png')
+SIR3G2 = large(A:B, G:H);
+imwrite(SIR3G2,'../SS/Input/SIR3G2.png')
+SIR3G3 = large(A:B, G:H);
+imwrite(SIR3G3,'../SS/Input/SIR3G3.png')
+
+SIR4G1 = large(A:B, H:I);
+imwrite(SIR4G1,'../SS/Input/SIR4G1.png')
+SIR4G2 = large(A:B, H:I);
+imwrite(SIR4G2,'../SS/Input/SIR4G2.png')
+SIR4G3 = large(A:B, H:I);
+imwrite(SIR4G3,'../SS/Input/SIR4G3.png')
+
+imwrite(SIR4G3,'../ParameterOptimization/Input/ParOptSample.png')
