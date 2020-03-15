@@ -1,0 +1,53 @@
+%4 Crop*
+Cx = 248; 
+Cy = 288;
+radius = 271;
+
+
+basefolder = 'C:\Users\aleja\OneDrive\Desktop\ForUndergrads\'
+InputFolder = strcat(basefolder,'Input\')
+MidputFolder = strcat(basefolder,'Midput\')
+cd(InputFolder)
+
+
+filePattern = fullfile(InputFolder, '*.png');
+theFiles = dir(filePattern);
+SE = offsetstrel('ball',100,5);
+
+
+%PreProcess
+for K = [1:length(theFiles)] 
+ OriginalImage = imread(theFiles(K).name);		%Loads image into workspace
+[Height, Width,trash] = size(OriginalImage)
+ 
+%Optional chunk: shows the crop cut positions. 
+%Change where the crop is with Cx and Cy up above
+ 
+imshow(OriginalImage)
+VerticalLine = line([Cx Cx],[0 Height]);
+HorizontalLine = line([0 Width],[Cy Cy]);
+hold off
+
+Q1 = OriginalImage([1:int16(Cy)],[1:int16(Cx)]);
+Q2 = OriginalImage([1:int16(Cy)],[int16(Cx):Width]);
+Q3 = OriginalImage([int16(Cy):Height],[1:int16(Cx)]);
+Q4 = OriginalImage([int16(Cy):Height],[int16(Cx):Width]);
+
+
+MidputImages(K).First = Q1
+imshow(Q1);
+saveas(gcf,[MidputFolder,'Q1_',theFiles(K).name])
+
+MidputImages(K).Second = Q2
+imshow(Q2);
+saveas(gcf,[MidputFolder,'Q2_',theFiles(K).name])
+
+MidputImages(K).Third = Q3
+imshow(Q3);
+saveas(gcf,[MidputFolder,'Q3_',theFiles(K).name])
+
+MidputImages(K).Fourth = Q4
+imshow(Q4);
+saveas(gcf,[MidputFolder,'Q4_',theFiles(K).name])
+
+end
