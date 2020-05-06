@@ -27,9 +27,19 @@
 %result in a good parameter recomendation. 
 
 
-%adds resulting p value into the P value array (parr), put into the cell,
-%cell P value is put in the parr array depends on the parameters
+
+
 
 %I suspect this program is producing better options than the ideal finder
 %says... this implies that there is an error in finding the highest p
 %value??
+
+
+for a=1
+%%%MODEL 1%%%%
+% ParrOfInterest = parr(filtered) 
+% 
+% [T,I,X,S,M] = ind2sub(([___?___]),filtered);   %not sure what should be in D
+% linreg = fitlm([T I X S M],ParrOfInterest)
+% plotEffects(linreg)
+end
