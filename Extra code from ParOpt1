@@ -1,0 +1,35 @@
+%[h,rangemincvalue] = corrcoef(pvalue,rangeminiter);
+%rangeminCval(rangeminiter,rangemaxiter,maxpixiter,senseiter,threshiter) = rangemincvalue;
+
+%[h,rangemaxcvalue] = corrcoef(pvalue,rangemaxiter);
+%rangemaxCval(rangeminiter,rangemaxiter,maxpixiter,senseiter,threshiter) = rangemaxcvalue;
+
+
+%[h,maxpixcvalue] = corrcoef(pvalue,maxpixiter);
+%maxpixCval(rangeminiter,rangemaxiter,maxpixiter,senseiter,threshiter) = maxpixcvalue;
+
+%[h,sensecvalue] = corrcoef(pvalue,senseiter);
+%senseCval(rangeminiter,rangemaxiter,maxpixiter,senseiter,threshiter) = sensecvalue;
+
+
+%[h,threshcvalue] = corrcoef(pvalue,threshiter);
+%threshCval(rangeminiter,rangemaxiter,maxpixiter,senseiter,threshiter) = threshcvalue;
+
+%LengthEffect = 1/minus(length(Target),length(SampleR));
+%pres = times(LengthEffect,pvalue);  
+
+%Note that length effect should be toggle-able. not apt for every situation
+
+%pres gives a "P value" that depends on 
+%BOTH the number of colonies detected AND the closeness of the distribution to the ideal
+%Or, at least, it's supposed to. I need a statistical test that can account
+%for both, because the highest pres value in the 20k calculations does not
+%result in a good parameter recomendation. 
+
+
+%adds resulting p value into the P value array (parr), put into the cell,
+%cell P value is put in the parr array depends on the parameters
+
+%I suspect this program is producing better options than the ideal finder
+%says... this implies that there is an error in finding the highest p
+%value??
