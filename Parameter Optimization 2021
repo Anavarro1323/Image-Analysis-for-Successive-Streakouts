@@ -1,12 +1,13 @@
 tic
-currentlap = 1
+currentlap = 0
+Finds = 0
 pvaluelist = {}
-Coordinates = cell(1,160)
+Coordinates = cell(1,10000);
 
 
 warning('off','all')
 %Image Loading and Preprocessing
-% InputRep = imread('InputRep.jpg');
+InputRep = imread('InputRep.jpg');
 
  Target = table2array(Targets) ; 
  OriginalImage = InputRep;	%Loads image into workspace
@@ -18,60 +19,52 @@ warning('off','all')
 imshowpair(ThresholdedImage,BW,'montage') % View results of toggle here 
 
  %False Positive Elimination Set up 
-% CC1 = bwconncomp(BWcomp); %makes a struct array of object information, saved as CC1
-% InLabMat = labelmatrix(CC1); %turns the CC1 structural array into a label matrix, different objects are identified in sequential numbers
-% RGBLabMat = label2rgb(InLabMat,'jet','w','shuffle'); %turns the sequential numbering into different colors, for visualization
-% array1 = cell(CC1.NumObjects,1); %creates a list of spaces that will be populated by either 0 or 1, based on maxpix size
-% 
+ CC1 = bwconncomp(imcomplement(ThresholdedImage)); %makes a struct array of object information, saved as CC1
+InLabMat = labelmatrix(CC1); %turns the CC1 structural array into a label matrix, each row is an object, each column is the label matrix is a 1D-index-of-a-pixel within the object indicated by row
+RGBLabMat = label2rgb(InLabMat,'jet','w','shuffle'); %turns the sequential numbering into different colors, for visualization
+array1 = cell(CC1.NumObjects,1); %creates a list of spaces that will be populated by either 0 or 1, based on maxpix size. Each row is an object, entry in column 1 will indicate given object is to be deleted
 
 
 
-for rangemin = [6:1:9];
+
+for rangemin = [1:5];
     
-for rangemax = [10:1:12];
+for rangemax = [5:10];
   range = [rangemin rangemax];
   
- for Sensitivityloop = [0.9:0.01:1];
+ for Sensitivityloop = [0.95:0.01:1];
 sense = Sensitivityloop;
      
-%for maxpixloop = [5:5:205] 
-%maxpix = maxpixloop; %maxpix at first was 125
+for maxpix = [500:100:2000]  
+%How Many Laps so far?
+currentlap = currentlap + 1 
+    
+CC1 = bwconncomp(imcomplement(ThresholdedImage)); %makes a struct array of object information, saved as CC1
+InLabMat = labelmatrix(CC1);
 
 %%False Positive elimination algorithm
-% 
-% for x =[1:CC1.NumObjects];                           %fills in array1 with 1 or 0, depending on whether a detected object is larger than the maxpix threshold limit. 
-% if length(CC1.PixelIdxList{1,x}) > maxpix;
-% array1{x,1} = 1;
-% else array1{x,1} = 0;
-% end
-% end
-% 
-% for x = [1:CC1.NumObjects];                           %If array1 is 1, delete the object, otherwise leave the object
-%     if array1{x,1} == 1;
-% InLabMat(InLabMat == x) = 0;
-%     end
-% end
-% FPEresult = label2rgb(InLabMat,'jet','w','shuffle');  
-% 
-% 
+%                                                      X represents object
+for x =[1:CC1.NumObjects];                           %fills in array1 with 1 or 0, depending on whether a detected object is larger than the maxpix threshold limit. 
+ if length(CC1.PixelIdxList{1,x}) > maxpix;             % compare number of pixels in object to maxpix value
+ array1{x,1} = 1;                                       %Array1 is a 2D array [size is #objects = row number, 1 is column number]                                                     
+ else array1{x,1} = 0;                                   %If current object has more pixels than maxpix, array1's entry for this object is 1
+ end                                                        %Array1 stores whether a given object should be erased. 1 if yes, 2 if 0
+ end
+ 
+ for x = [1:CC1.NumObjects];                           %If array1 is 1, delete the object, otherwise leave the object
+     if array1{x,1} == 1;
+ InLabMat(InLabMat == x) = 0;                         %Delete the object. Within the Label matrix, a row (object) chosen to be deleted will have all of the pixel coordinates turned to 0. 
+     end
+ end
+ FPEresult = label2rgb(InLabMat,'jet','w','shuffle');  
 
-
-
-
+ 
 %Circle Finding Algorithm
-[SampleC,SampleR] = imfindcircles(ThresholdedImage,range,'ObjectPolarity','dark', ...;
-'Sensitivity',sense,'Method','twostage');
+[SampleC,SampleR] = imfindcircles(FPEresult,range,'ObjectPolarity','dark','Sensitivity',sense,'Method','twostage');
 
-% figure;imshow(InputRep)
+% figure;imshow(FPEresult)
 % viscircles(SampleC, SampleR, 'EdgeColor', 'b')
-
-
-
-%InLabMat = labelmatrix(CC1);
-
-
-%Comparing result to the ideal in this loop, Aim to maximize p value 
-
+ 
 
 Target(isnan(Target))=0;
 ThisRunAreas = times(pi,power(SampleR,2));
@@ -81,7 +74,7 @@ A = padcat(ThisRunAreas,Target);
 Pvaluelist(currentlap).pvalue = pvalue
 
 
-Coordinates(currentlap) = {[rangemin; rangemax; sense]}
+Coordinates(currentlap) = {[rangemin; rangemax; sense; maxpix]}
 %LengthEffect = 1/minus(length(Target),length(SampleR));
 %pres = times(LengthEffect,pvalue);  %pres gives a "P value" that depends on BOTH the number of colonies detected AND the closeness of the distribution to the ideal
 %Or, at least, it's supposed to. I need a statistical test that can account
@@ -95,68 +88,77 @@ Coordinates(currentlap) = {[rangemin; rangemax; sense]}
 
 
 
-%How Many Laps so far?
-currentlap = currentlap + 1 
 
+
+colcount = length(SampleR)
+
+if pvalue < 0.005
+    Finds = Finds + 1
+    Batch(Finds).lap = currentlap
+    Batch(Finds).pval = pvalue
+    Batch(Finds).colcount = colcount
+end
+
+end 
 
 
 end
-
 
  end
 end
 
+%close all
 
 Pvaluecell = struct2cell(Pvaluelist)
 Pvaluemat = cell2mat(Pvaluecell)
 
 
-
-IdealPvalue = max((Pvaluemat(:,:,:)))
-for k = [1:length(Pvaluelist)]
-    if Pvaluelist(k).pvalue == IdealPvalue  
+for k = [1:length(Batch)]
+    if Batch(k).colcount == length(Target)
+    Ideal = Batch(k).lap
     Index = k
     end
 end
 
 
-RminI= Coordinates{Index}(1)
-RmaxI= Coordinates{Index}(2)
-SenseI = Coordinates{Index}(3)
+RminI= Coordinates{Ideal}(1)
+RmaxI= Coordinates{Ideal}(2)
+SenseI = Coordinates{Ideal}(3)
+MaxpixI = Coordinates{Ideal}(4)
+
+%IdealFPE
+
+%%False Positive elimination algorithm
+% 
+for x =[1:CC1.NumObjects];                           %fills in array1 with 1 or 0, depending on whether a detected object is larger than the maxpix threshold limit. 
+ if length(CC1.PixelIdxList{1,x}) > MaxpixI;
+ array1{x,1} = 1;
+ else array1{x,1} = 0;
+ end
+ end
+ 
+ for x = [1:CC1.NumObjects];                           %If array1 is 1, delete the object, otherwise leave the object
+     if array1{x,1} == 1;
+ InLabMat(InLabMat == x) = 0;
+     end
+ end
+ FPEresultI = label2rgb(InLabMat,'jet','w','shuffle');
+
+ %%%%%%%%%%%%%%%
+
+
+
+
 
 Irange = [RminI RmaxI]
 
-% [IRmin,IRmax,I3,I4] = ind2sub(size(parr),Ideal); %Ideal Parameters are saved to a variable
-% Imaxpix = times(I3,5)
-% Irange = [IRmin IRmax]
-% Isense = times(I4,0.1)
-
-
-
-%FPE with ideal
-% 
-% for x =[1:CC1.NumObjects];
-% if length(CC1.PixelIdxList{1,x}) > I3;
-% array1{x,1} = 1;
-% else array1{x,1} = 0;
-% end
-% end
-% 
-% for x = [1:CC1.NumObjects];
-%     if array1{x,1} == 1;
-% InLabMat(InLabMat == x) = 0;
-%     end
-% end
-% FPEresultIdeal = label2rgb(InLabMat,'jet','w','shuffle');
-
-
 %Circle Finding Algorithm with Ideal
-[IdealC,IdealR] = imfindcircles(ThresholdedImage,[Irange],'ObjectPolarity','dark', ...;
+[IdealC,IdealR] = imfindcircles(FPEresultI,[Irange],'ObjectPolarity','dark', ...;
 'Sensitivity',SenseI,'Method','twostage');
 
+A = padcat(times(pi,power(IdealR,2)),Target);
 
-
-figure;imshow(ThresholdedImage)
+figure;imshow(FPEresultI)
 viscircles(IdealC, IdealR, 'EdgeColor', 'b')
 
 figure;imshow(InputRep)
@@ -172,7 +174,9 @@ RmaxI
 %Imaxpix
 fprintf('ideal max sensitivity is')
 SenseI
-% fprintf('ideal threshold value is')
-% I5 
+fprintf('ideal MaxPix value is')
+MaxpixI 
 
+save('ParameterWorkspace')
 toc
+
