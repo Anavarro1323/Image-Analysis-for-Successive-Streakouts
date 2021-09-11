@@ -1,38 +1,61 @@
 %4 Crop*
-Cx = 248; 
-Cy = 288;
-radius = 271;
 
 
-basefolder = 'C:\Users\aleja\OneDrive\Desktop\ForUndergrads\'
+
+radius = 570;
+basefolder = 'C:\Users\aleja\OneDrive\Desktop\SenSeekInput\[B2]C7 AT1\'
 InputFolder = strcat(basefolder,'Input\')
 MidputFolder = strcat(basefolder,'Midput\')
-cd(InputFolder)
 
 
-filePattern = fullfile(InputFolder, '*.png');
+filePattern = fullfile(InputFolder, '*.jpg');
 theFiles = dir(filePattern);
 SE = offsetstrel('ball',100,5);
 
+% User Inputs
+Gens = 5
 
-%PreProcess
+% 
+%  for K = [1:Gens]
+% batch = "[B2]C7 AT1 "
+% Genk = strcat('Gen',string(K),'.jpg') 
+% 
+% InputImages(K).photos = imread(fullfile(InputFolder,strcat(string(batch), string(Genk))))
+% imshow(InputImages(K).photos)
+% h = datacursormode
+% pause(5)
+% InputImages(K).centers = getCursorInfo(h)
+% close all
+% end
+% 
+
+
+
+
+%PreProcess 
 for K = [1:length(theFiles)] 
- OriginalImage = imread(theFiles(K).name);		%Loads image into workspace
-[Height, Width,trash] = size(OriginalImage)
+ 
+ PitriDish = images.roi.Circle(gca,'Center',[InputImages(K).centers.Position(1) InputImages(K).centers.Position(2)],'Radius',radius);
+ Mask = double(PitriDish.createMask(InputImages(K).photos));
+ masked = bsxfun(@times, InputImages(K).photos, cast(Mask, 'like', InputImages(K).photos));
+ 
+ %Loads image into workspace
+[Height, Width,trash] = size(masked);
  
 %Optional chunk: shows the crop cut positions. 
 %Change where the crop is with Cx and Cy up above
  
-imshow(OriginalImage)
-VerticalLine = line([Cx Cx],[0 Height]);
-HorizontalLine = line([0 Width],[Cy Cy]);
-hold off
+Cx = InputImages(K).centers.Position(1)
+Cy = InputImages(K).centers.Position(2)
+xsmall = minus(Cx,radius)
+xlarge = plus(Cx,radius)
+ysmall = minus(Cy,radius)
+ylarge = plus(Cy,radius)
 
-Q1 = OriginalImage([1:int16(Cy)],[1:int16(Cx)]);
-Q2 = OriginalImage([1:int16(Cy)],[int16(Cx):Width]);
-Q3 = OriginalImage([int16(Cy):Height],[1:int16(Cx)]);
-Q4 = OriginalImage([int16(Cy):Height],[int16(Cx):Width]);
-
+Q1 = imcrop(masked,[xsmall ysmall radius radius]);
+Q2 = imcrop(masked,[Cx ysmall radius radius]);
+Q3 = imcrop(masked,[xsmall Cy radius radius]);
+Q4 = imcrop(masked,[Cx Cy radius radius]);
 
 MidputImages(K).First = Q1
 imshow(Q1);
@@ -51,3 +74,6 @@ imshow(Q4);
 saveas(gcf,[MidputFolder,'Q4_',theFiles(K).name])
 
 end
+
+save('4CropWorkspace')
+movefile('4CropWorkspace.mat',basefolder)
