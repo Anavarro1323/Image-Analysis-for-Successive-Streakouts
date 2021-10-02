@@ -1,33 +1,27 @@
-%4 Crop*
-
-
-
-radius = 570;
-basefolder = 'C:\Users\aleja\OneDrive\Desktop\SenSeekInput\[B2]C7 AT1\'
+basefolder = 'C:\Users\aleja\OneDrive\Desktop\SecondExample\'
 InputFolder = strcat(basefolder,'Input\')
 MidputFolder = strcat(basefolder,'Midput\')
 
 
 filePattern = fullfile(InputFolder, '*.jpg');
 theFiles = dir(filePattern);
-SE = offsetstrel('ball',100,5);
 
 % User Inputs
-Gens = 5
+Gens = 4
+radius = 600
 
-% 
-%  for K = [1:Gens]
-% batch = "[B2]C7 AT1 "
-% Genk = strcat('Gen',string(K),'.jpg') 
-% 
-% InputImages(K).photos = imread(fullfile(InputFolder,strcat(string(batch), string(Genk))))
-% imshow(InputImages(K).photos)
-% h = datacursormode
-% pause(5)
-% InputImages(K).centers = getCursorInfo(h)
-% close all
-% end
-% 
+ for K = [1:Gens]
+batch = "Capture"
+Genk = strcat(string(K),'.jpg') 
+
+InputImages(K).photos = imread(fullfile(InputFolder,strcat(string(batch), string(Genk))))
+imshow(InputImages(K).photos)
+h = datacursormode
+pause(5)
+InputImages(K).centers = getCursorInfo(h)
+close all
+end
+
 
 
 
@@ -59,21 +53,23 @@ Q4 = imcrop(masked,[Cx Cy radius radius]);
 
 MidputImages(K).First = Q1
 imshow(Q1);
-saveas(gcf,[MidputFolder,'Q1_',theFiles(K).name])
+saveas(gcf,strcat(MidputFolder,'Q1_Capture',string(K),'.jpg'))
 
 MidputImages(K).Second = Q2
 imshow(Q2);
-saveas(gcf,[MidputFolder,'Q2_',theFiles(K).name])
+saveas(gcf,strcat(MidputFolder,'Q2_Capture',string(K),'.jpg'))
+
 
 MidputImages(K).Third = Q3
 imshow(Q3);
-saveas(gcf,[MidputFolder,'Q3_',theFiles(K).name])
+saveas(gcf,strcat(MidputFolder,'Q3_Capture',string(K),'.jpg'))
+
 
 MidputImages(K).Fourth = Q4
 imshow(Q4);
-saveas(gcf,[MidputFolder,'Q4_',theFiles(K).name])
+saveas(gcf,strcat(MidputFolder,'Q4_Capture',string(K),'.jpg'))
+
 
 end
 
 save('4CropWorkspace')
-movefile('4CropWorkspace.mat',basefolder)
