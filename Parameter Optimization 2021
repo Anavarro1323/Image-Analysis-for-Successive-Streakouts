@@ -2,24 +2,23 @@ tic
 currentlap = 0
 Finds = 0
 pvaluelist = {}
-Coordinates = cell(1,10000);
+
 
 
 warning('off','all')
 %Image Loading and Preprocessing
-InputRep = imread('InputRep.jpg');
-
+InputRep = imread('MutG3.jpg');
  Target = table2array(Targets) ; 
  OriginalImage = InputRep;	%Loads image into workspace
  
   BW =  OriginalImage(:,:,2); % the 2 in the the third index for this line can be toggled between 1 and 3 for clearest distinction between colony and background
-      ThresholdedImage = imbinarize(BW, 'adaptive','ForegroundPolarity','dark','Sensitivity',0.4);
-        parr =NaN([4 4 10]);
+      ThresholdedImage = imbinarize(BW, 'adaptive','ForegroundPolarity','bright','Sensitivity',0.4);
+    
      
-imshowpair(ThresholdedImage,BW,'montage') % View results of toggle here 
+
 
  %False Positive Elimination Set up 
- CC1 = bwconncomp(imcomplement(ThresholdedImage)); %makes a struct array of object information, saved as CC1
+ CC1 = bwconncomp(ThresholdedImage); %makes a struct array of object information, saved as CC1
 InLabMat = labelmatrix(CC1); %turns the CC1 structural array into a label matrix, each row is an object, each column is the label matrix is a 1D-index-of-a-pixel within the object indicated by row
 RGBLabMat = label2rgb(InLabMat,'jet','w','shuffle'); %turns the sequential numbering into different colors, for visualization
 array1 = cell(CC1.NumObjects,1); %creates a list of spaces that will be populated by either 0 or 1, based on maxpix size. Each row is an object, entry in column 1 will indicate given object is to be deleted
@@ -29,17 +28,17 @@ array1 = cell(CC1.NumObjects,1); %creates a list of spaces that will be populate
 
 for rangemin = [1:5];
     
-for rangemax = [5:10];
+for rangemax = [6:11];
   range = [rangemin rangemax];
   
- for Sensitivityloop = [0.95:0.01:1];
+ for Sensitivityloop = [0.95:0.01:.99];
 sense = Sensitivityloop;
      
-for maxpix = [500:100:2000]  
+for maxpix = [80:10:150]  
 %How Many Laps so far?
 currentlap = currentlap + 1 
     
-CC1 = bwconncomp(imcomplement(ThresholdedImage)); %makes a struct array of object information, saved as CC1
+CC1 = bwconncomp(ThresholdedImage); %makes a struct array of object information, saved as CC1
 InLabMat = labelmatrix(CC1);
 
 %%False Positive elimination algorithm
@@ -64,40 +63,27 @@ for x =[1:CC1.NumObjects];                           %fills in array1 with 1 or 
 
 % figure;imshow(FPEresult)
 % viscircles(SampleC, SampleR, 'EdgeColor', 'b')
- 
+% 
+% pause (0.5)
+%     close all
+
 
 Target(isnan(Target))=0;
 ThisRunAreas = times(pi,power(SampleR,2));
 A = padcat(ThisRunAreas,Target);
 [h,pvalue] = ttest2(A(:,1),A(:,2));
 
-Pvaluelist(currentlap).pvalue = pvalue
+Pvaluelist(currentlap).pvalue = pvalue;
+colcount = length(SampleR);
 
+    Index(currentlap).lap = currentlap
+    Index(currentlap).Pval = pvalue;
+    Index(currentlap).colcount = colcount;
+    Index(currentlap).Rmin = rangemin;
+    Index(currentlap).Rmax = rangemax;
+    Index(currentlap).Maxpix = maxpix;
+    Index(currentlap).Sense = sense;
 
-Coordinates(currentlap) = {[rangemin; rangemax; sense; maxpix]}
-%LengthEffect = 1/minus(length(Target),length(SampleR));
-%pres = times(LengthEffect,pvalue);  %pres gives a "P value" that depends on BOTH the number of colonies detected AND the closeness of the distribution to the ideal
-%Or, at least, it's supposed to. I need a statistical test that can account
-%for both, because the highest pres value in the 20k calculations does not
-%result in a good parameter recomendation. 
-
-
-%adds resulting p value into the P value array (parr), put into the cell,
-%cell P value is put in the parr array depends on the parameters
-%parr(rangemin,rangemax,fix(times(maxpixloop,0.2)),fix(times(sense,10))) = pres;
-
-
-
-
-
-colcount = length(SampleR)
-
-if pvalue < 0.005
-    Finds = Finds + 1
-    Batch(Finds).lap = currentlap
-    Batch(Finds).pval = pvalue
-    Batch(Finds).colcount = colcount
-end
 
 end 
 
@@ -109,22 +95,27 @@ end
 
 %close all
 
-Pvaluecell = struct2cell(Pvaluelist)
-Pvaluemat = cell2mat(Pvaluecell)
-
+Finds = 0
+for k = [1:length(Index)]
+if Index(k).Pval < 0.005;
+    Finds = Finds + 1;
+    Batch(Finds).lap = Index(k).lap;
+    Batch(Finds).pval = Index(k).Pval;
+    Batch(Finds).colcount = Index(k).colcount;
+end
+end
 
 for k = [1:length(Batch)]
-    if Batch(k).colcount == length(Target)
+    if Batch(k).colcount == 76
     Ideal = Batch(k).lap
-    Index = k
     end
 end
 
 
-RminI= Coordinates{Ideal}(1)
-RmaxI= Coordinates{Ideal}(2)
-SenseI = Coordinates{Ideal}(3)
-MaxpixI = Coordinates{Ideal}(4)
+RminI= Index(Ideal).Rmin
+RmaxI= Index(Ideal).Rmax
+SenseI = Index(Ideal).Sense
+MaxpixI = Index(Ideal).Maxpix
 
 %IdealFPE
 
@@ -161,7 +152,7 @@ A = padcat(times(pi,power(IdealR,2)),Target);
 figure;imshow(FPEresultI)
 viscircles(IdealC, IdealR, 'EdgeColor', 'b')
 
-figure;imshow(InputRep)
+figure;imshow(imcomplement(InputRep))
 viscircles(IdealC, IdealR, 'EdgeColor', 'b')
 
 clc 
