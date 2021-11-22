@@ -284,6 +284,28 @@ subplot(2,4,8);subimage(AllImages(10).Fourth);title(count(10).Q4)
 
 
 
+%HistPlotWT
+for x= [1:10]
+  f = figure;
+    histogram(AllQuadrants(x).WT);
+    saveas(f,strcat(OutputFolder,'HistfilesWT\','WT Histogram Gen',string(x),'.jpg'))
+end
+for x = [1:10]
+HistogramImagesWT = imageDatastore(fullfile(OutputFolder,'HistfilesWT\'))
+end
+montage(HistogramImagesWT)
+%HistPlotMut
+for x= [1:10]
+  f = figure;
+    histogram(AllQuadrants(x).Mut);
+    saveas(f,strcat(OutputFolder,'HistfilesMut\','Mutant Histogram Gen',string(x),'.jpg'))
+end
+for x = [1:10]
+HistogramImagesMut = imageDatastore(fullfile(OutputFolder,'HistfilesMut\'))
+end
+montage(HistogramImagesMut)
+
+
 %RawPlot:
 A = padcat (AllQuadrants(:).First, AllQuadrants(:).Second, AllQuadrants(:).Third, AllQuadrants(:).Fourth)
 
